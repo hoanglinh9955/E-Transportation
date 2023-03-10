@@ -64,3 +64,40 @@ exports.getRoutes = async (req, res, next) => {
     })
   }
 }
+
+
+exports.getAllTrips = async (req, res, next) => {
+  const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error('Invalid Input.');
+      error.statusCode = 200;
+      error.message = errors.errors;
+      error.data = false;
+      next(error);
+      return
+    }
+ 
+  const trips = new Trips();
+
+  const result = await trips.getTrip()
+    .then(result => { return result })
+    .catch(err => console.log(err))
+
+  console.log(result);
+  if (result.recordset.length == 0) {
+    res.status(200).json({
+      message: "Don't Have Trip To Get",
+      data: false
+    })
+    return
+  }
+
+  if (result.recordset) {
+    res.status(200).json({
+      message: "Get Trip Success",
+      data: true,
+      result: result.recordset
+    })
+    return
+  }
+}

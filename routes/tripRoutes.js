@@ -10,4 +10,8 @@ router.post('/getTrips', [ check('depart').notEmpty().withMessage('Depart is Emp
                         ], tripController.getTrips)
                         
 router.post('/getRoutes', tripController.getRoutes)
+
+
+router.post('/getAllTrips', tripController.getAllTrips)
+                        
 module.exports = router;    

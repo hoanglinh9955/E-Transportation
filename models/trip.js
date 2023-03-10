@@ -406,5 +406,41 @@ class Trip {
       console.error('Error:', err);
     }
   }
+  async getTrip() {
+    try {
+
+      // create connection pool
+      const pool = await mssql.connect(config.sql);
+      const query = `		 
+      SELECT tr.id as transport_id, t.begin_time, t.end_time, t.distance, t.price, 
+      tr.name as transport_name, tr.image_path, tr.type,
+      r.depart, r.destination, t.depart_date,
+       c.name as company_name, c.address, c.hotline, c.email, c.status, c.role,
+       COUNT(cell.sit_number) as seats, t.time
+     FROM trip t 
+      JOIN route r ON t.route_id = r.id
+      JOIN company c ON r.company_id = c.id
+      JOIN transportation tr ON tr.trip_id = t.id
+      LEFT JOIN cell ON cell.transportation_id = tr.id
+     GROUP BY tr.id, t.begin_time, t.end_time, t.distance, t.price, 
+       tr.name, tr.image_path, tr.type,
+       r.depart, r.destination, t.depart_date,
+       c.name, c.address, c.hotline, c.email, c.status, c.role, t.time
+ ;
+`;
+
+      // create a new request object
+      const result = await pool.request()
+        .query(query)
+       
+  
+      console.log(result.recordset)
+      // return the result
+      return result;
+    } catch (err) {
+      console.error('Error:', err);
+    }
+  }
+
 }
 module.exports = Trip;
