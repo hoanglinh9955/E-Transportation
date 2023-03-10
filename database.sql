@@ -31,6 +31,7 @@ create table trip(
    route_id INT FOREIGN KEY REFERENCES route(id),
    begin_time NVARCHAR(50),
    end_time NVARCHAR(50),
+   time NVARCHAR(50),
    distance int,
    price int,
    depart_date NVARCHAR(50)
@@ -111,17 +112,17 @@ go
 INSERT INTO route_name(route_id, company_id ,route_name)
 VALUES ('3', '3', 'tphcm - nhatrang')
 go
-INSERT INTO trip(route_id, distance, price, begin_time, end_time, depart_date)
-VALUES ('1', '556','123','10:00', '11:00', '2022-01-01')
+INSERT INTO trip(route_id, distance, price, begin_time, end_time, time, depart_date)
+VALUES ('1', '556','123','10:00', '11:00', '1h', '2022-01-01')
 go
-INSERT INTO trip(route_id, distance, price, begin_time, end_time, depart_date)
-VALUES ('2', '666', '333', '05:30' , '07:30', '2022-02-01')
+INSERT INTO trip(route_id, distance, price, begin_time, end_time, time, depart_date)
+VALUES ('2', '666', '333', '05:30' , '07:30','2h', '2022-02-01')
 go
-INSERT INTO trip(route_id, distance, price, begin_time, end_time, depart_date)
-VALUES ('2', '666', '333', '05:30' , '07:30', '2022-04-01')
+INSERT INTO trip(route_id, distance, price, begin_time, end_time, time ,depart_date)
+VALUES ('2', '666', '333', '05:30' , '07:30','2h', '2022-04-01')
 go
-INSERT INTO trip(route_id, distance, price, begin_time, end_time, depart_date)
-VALUES ('3', '66', '333', '05:30' , '07:30', '2022-04-01')
+INSERT INTO trip(route_id, distance, price, begin_time, end_time, time, depart_date)
+VALUES ('3', '66', '333', '05:30' , '07:30','2h', '2022-04-01')
 go
 INSERT INTO  transportation(trip_id, image_path, name, type)
 VALUES ('1', 'example/path', 'limo','16')

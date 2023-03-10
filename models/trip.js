@@ -23,16 +23,23 @@ class Trip {
 
       // create connection pool
       const pool = await mssql.connect(config.sql);
-      const query = `
-      SELECT tr.id as transport_id, t.begin_time, t.end_time, t.distance, t.price, 
-          tr.name as transport_name, tr.image_path, tr.type,
-          r.depart, r.destination, t.depart_date,
-        c.name as company_name, c.address, c.hotline, c.email, c.status, c.role
-      FROM trip t 
-          JOIN route r ON t.route_id = r.id
-          JOIN company c ON r.company_id = c.id
-          JOIN transportation tr ON tr.trip_id = t.id
-      WHERE r.depart = @depart AND r.destination = @destination AND t.depart_date = @depart_date `;
+      const query = `		 
+		 SELECT tr.id as transport_id, t.begin_time, t.end_time, t.distance, t.price, 
+     tr.name as transport_name, tr.image_path, tr.type,
+     r.depart, r.destination, t.depart_date,
+   c.name as company_name, c.address, c.hotline, c.email, c.status, c.role,
+   COUNT(cell.sit_number) as cell_count
+ FROM trip t 
+     JOIN route r ON t.route_id = r.id
+     JOIN company c ON r.company_id = c.id
+     JOIN transportation tr ON tr.trip_id = t.id
+     JOIN cell ON cell.transportation_id = tr.id
+WHERE r.depart = @depart AND r.destination = @destination AND t.depart_date = @depart_date
+ GROUP BY tr.id, t.begin_time, t.end_time, t.distance, t.price, 
+     tr.name, tr.image_path, tr.type,
+     r.depart, r.destination, t.depart_date,
+   c.name, c.address, c.hotline, c.email, c.status, c.role;
+`;
 
       // create a new request object
       const result = await pool.request()
@@ -40,7 +47,8 @@ class Trip {
         .input('destination', mssql.NVarChar, destination)
         .input('depart_date', mssql.NVarChar, depart_date)
         .query(query)
-
+       
+  
       console.log(result.recordset)
       // return the result
       return result;
@@ -303,13 +311,19 @@ class Trip {
   async getTripsByComId(com_id) {
     try {
       const pool = await mssql.connect(config.sql);
-      let query = ` select route.depart, route.destination, trip.depart_date, trip.distance, trip.price,
-                          trip.end_time, trip.begin_time, transportation.name, transportation.image_path,
-                          transportation.type, route.id as route_id, trip.id as trip_id, transportation.id as tran_id
-                    from route  join company on (route.company_id = company.id)
-                                join trip on (route.id = trip.route_id)
-                                join transportation on (trip.id = transportation.trip_id)
-                    where company.id = @company_id `;
+      let query = ` 	SELECT route.depart, route.destination, trip.depart_date, trip.distance, trip.price,
+      trip.end_time, trip.begin_time, transportation.name, transportation.image_path,
+      transportation.type, route.id as route_id, trip.id as trip_id, transportation.id as tran_id,
+      COUNT(cell.sit_number) as seats
+      FROM route
+        JOIN company ON (route.company_id = company.id)
+        JOIN trip ON (route.id = trip.route_id)
+        JOIN transportation ON (trip.id = transportation.trip_id)
+        LEFT JOIN cell ON (transportation.id = cell.transportation_id)
+        WHERE company.id = @company_id
+        GROUP BY route.depart, route.destination, trip.depart_date, trip.distance, trip.price,
+                  trip.end_time, trip.begin_time, transportation.name, transportation.image_path,
+                  transportation.type, route.id, trip.id, transportation.id;`;
       const result = await pool.request()
         .input('company_id', mssql.Int, com_id)
         .query(query)
@@ -327,6 +341,61 @@ class Trip {
       let query = ` select * from route_name where company_id = @company_id `;
       const result = await pool.request()
         .input('company_id', mssql.Int, com_id)
+        .query(query)
+
+      console.log(result)
+      return result
+    } catch (err) {
+      console.error('Error:', err);
+    }
+  }
+
+  async deleteRouteByRouteIdAndComId(com_id, route_id){
+    try {
+      const pool = await mssql.connect(config.sql);
+      let query = `DELETE ticket_detail
+      FROM ticket_detail 
+        JOIN ticket ON ticket.id = ticket_detail.ticket_id
+        JOIN transportation ON ticket.transportation_id = transportation.id
+        JOIN trip ON transportation.trip_id = trip.id
+        JOIN route ON trip.id = route.id
+        JOIN company ON company.id = route.company_id
+      WHERE route.id = @route_id and company.id = @company_id;
+      DELETE ticket
+      FROM ticket
+        JOIN transportation ON ticket.transportation_id = transportation.id
+        JOIN trip ON transportation.trip_id = trip.id
+        JOIN route ON trip.id = route.id
+        JOIN company ON company.id = route.company_id
+      WHERE route.id = @route_id and company.id = @company_id;
+      DELETE cell
+      FROM cell
+        JOIN transportation ON cell.transportation_id = transportation.id
+        JOIN trip ON transportation.trip_id = trip.id
+        JOIN route ON trip.id = route.id
+        JOIN company ON company.id = route.company_id
+      WHERE route.id = @route_id and company.id = @company_id;
+      DELETE transportation
+      FROM transportation
+        JOIN trip ON trip.id = transportation.trip_id
+        JOIN route ON trip.route_id = route.id
+        JOIN company ON company.id = route.company_id
+      WHERE route.id = @route_id and company_id = @company_id;
+      DELETE route_name
+      WHERE route_name.route_id = @route_id;
+      DELETE trip 
+      FROM trip
+        JOIN route ON route.id = trip.route_id
+        JOIN company ON company.id = route.id
+      WHERE route.id = @route_id and company_id = @company_id
+      DELETE route
+      FROM route 
+        JOIN company ON route.company_id = company.id
+      WHERE route.id = @route_id and company.id = @company_id;
+      `;
+      const result = await pool.request()
+        .input('company_id', mssql.Int, com_id)
+        .input('route_id',mssql.Int, route_id)
         .query(query)
 
       console.log(result)

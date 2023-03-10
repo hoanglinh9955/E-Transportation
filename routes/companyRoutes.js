@@ -12,6 +12,8 @@ router.post('/createUpdateTripByCompany', companyController.createUpdateTripByCo
 
 router.post('/createUpdateRouteByComId',companyController.createUpdateRouteByComId);
 
+router.post('/deleteRouteByRouteIdAndComId', companyController.deleteRouteByRouteIdAndComId);
+
 //,[  check('depart').notEmpty().withMessage('Depart is Empty.'),
 //check('destination').notEmpty().withMessage('Destination is Empty.'),
 //],

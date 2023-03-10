@@ -56,7 +56,13 @@ exports.createUpdateTripByCompany = async (req, res, next) => {
   const quantity_line = req.body.length
   const array_result = [];
   for(i = 0;i < quantity_line; i++){
-    const {company_id, depart, destination, depart_date, distance, price, end_time, begin_time, transport_name, image_path, type, route_id, trip_id, tran_id } = req.body[i]
+    const {company_id, depart, destination, distance, price, end_time, begin_time, transport_name, image_path, type, route_id, trip_id, tran_id } = req.body[i]
+    
+    const input = begin_time;
+    const dateObj = new Date(input);
+    const isoString = dateObj.toISOString();
+    const depart_date = isoString.slice(0, 10);
+
     const result = await trips.createUpdateTripByCompany(depart, destination, company_id, depart_date, distance, price, end_time, begin_time, transport_name, image_path, type, route_id, trip_id, tran_id)
       .then(result => { return result })
       .catch(err => console.log(err))
@@ -220,4 +226,38 @@ exports.getRouteNameByComId = async (req, res, next) => {
     })
     return
   }
+}
+
+exports.deleteRouteByRouteIdAndComId = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Invalid Input.');
+    error.statusCode = 200;
+    error.message = errors.errors;
+    error.data = false;
+    next(error);
+    return
+  }
+    const trips = new Trips();
+    const {company_id, route_id} = req.body;
+
+  const result = await trips.deleteRouteByRouteIdAndComId(company_id, route_id)
+    .then(result => { return result })
+    .catch(err => console.log(err))
+
+  console.log(result)
+
+  
+
+  if (result) {
+    res.status(200).json({
+      message: 'Delete Route Success',
+      data: true,
+      transportation: result.rowsAffected[3],
+      trip: result.rowsAffected[5],
+      route: result.rowsAffected[6]
+    })
+    return
+  }
+  
 }
