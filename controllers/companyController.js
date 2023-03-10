@@ -63,7 +63,15 @@ exports.createUpdateTripByCompany = async (req, res, next) => {
     const isoString = dateObj.toISOString();
     const depart_date = isoString.slice(0, 10);
 
-    const result = await trips.createUpdateTripByCompany(depart, destination, company_id, depart_date, distance, price, end_time, begin_time, transport_name, image_path, type, route_id, trip_id, tran_id)
+    const date1 = new Date(begin_time);
+    const date2 = new Date(end_time);
+    const diffInMs = date1 - date2;
+    const diffInMins = Math.floor(diffInMs / 1000 / 60); // convert milliseconds to minutes
+    const hours = Math.floor(diffInMins / 60);
+    const minutes = diffInMins % 60;
+    const time= `${hours.toString().padStart(2, '0')}h${minutes.toString().padStart(2, '0')}m`;
+
+    const result = await trips.createUpdateTripByCompany(depart, destination, company_id, depart_date, distance, price, end_time, begin_time, time, transport_name, image_path, type, route_id, trip_id, tran_id)
       .then(result => { return result })
       .catch(err => console.log(err))
     array_result.push(result);
