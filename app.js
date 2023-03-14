@@ -33,7 +33,7 @@ app.use('/api/company', companyRoutes)
 
 //error handle for app
 app.use((error, req, res, next) => {
-    console.log(error);
+    console.log(error.message);
     const status = error.statusCode || 500;
     const message = error.message;
     const data = error.data;

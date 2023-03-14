@@ -101,3 +101,39 @@ exports.getAllTrips = async (req, res, next) => {
     return
   }
 }
+exports.getAllTripByType = async (req, res, next) => {
+  const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error('Invalid Input.');
+      error.statusCode = 200;
+      error.message = errors.errors;
+      error.data = false;
+      next(error);
+      return
+    }
+ 
+  const trips = new Trips();
+  const {depart, destination, depart_date, type} = req.body
+  const result = await trips.getTripByType(depart, destination, depart_date, type)
+    .then(result => { return result })
+    .catch(err => console.log(err))
+
+  console.log(result);
+  if (result.recordset.length == 0) {
+    res.status(200).json({
+      message: "Don't Have Trip To Get",
+      data: false
+    })
+    return
+  }
+
+  if (result.recordset) {
+    res.status(200).json({
+      message: "Get Trip Success",
+      data: true,
+      result: result.recordset
+    })
+    return
+  }
+}
+

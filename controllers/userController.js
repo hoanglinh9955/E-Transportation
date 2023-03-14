@@ -14,9 +14,10 @@ sendgrid.setApiKey(API_KEY);
 exports.register = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log(errors.errors)
     const error = new Error('Invalid Input');
     error.statusCode = 200;
-    error.message = errors.errors;
+    error.message = errors.errors[0].msg;
     error.data = false;
     next(error);
     return;
@@ -92,7 +93,7 @@ exports.login = async (req, res, next) => {
   if (!errors.isEmpty()) {
     const error = new Error('Invalid Input');
     error.statusCode = 200;
-    error.message = errors.errors;
+    error.message = errors.errors[0].msg;
     error.data = false;
     next(error);
     return;
@@ -109,6 +110,8 @@ exports.login = async (req, res, next) => {
     const findCom = await company.findOne(email)
     .then(result => { return result })
     .catch(err => console.log(err))
+
+    
 
   if (!(findUser.recordset.length > 0|| findCom.recordset.length > 0)) {
     res.status(200).json({
@@ -127,10 +130,11 @@ exports.login = async (req, res, next) => {
       // company is correct
       try {
         if(!(password === loadedCom.password)){
-          const error = new Error('Sai Mật Khẩu ');
+          const error = new Error();
               error.statusCode = 200;
+              error.message = 'Sai Mật Khẩu '
               error.data = false;
-              throw error;
+              throw error
     
         } 
         console.log(loadedCom)
@@ -150,7 +154,8 @@ exports.login = async (req, res, next) => {
             token: token,
             companyId: loadedCom.id.toString(),
             role: loadedCom.role,
-            status: loadedCom.status
+            status: loadedCom.status,
+            companyName : loadedCom.name
           });
           return;
         
@@ -170,6 +175,7 @@ exports.login = async (req, res, next) => {
         if(!(password === loadedUser.password)){
           const error = new Error('Wrong password!');
               error.statusCode = 200;
+              error.message = 'Sai Mật Khẩu'
               error.data = false;
               throw error;
     
@@ -183,7 +189,12 @@ exports.login = async (req, res, next) => {
             'somesupersecretsecret',
             { expiresIn: '1h' }
           );
-      
+          
+          const ticket = new Ticket();
+          userTicket = await ticket.getTicketByUserId(loadedUser.id)
+            .then(result => { return result })
+            .catch(err => console.log(err))
+     
           res.status(200).json({
             message: 'Login successed',
             data: true,
@@ -191,7 +202,8 @@ exports.login = async (req, res, next) => {
             userId: loadedUser.id.toString(),
             role: loadedUser.role,
             status: loadedUser.status,
-            user_name: loadedUser.name
+            user_name: loadedUser.name,
+            ticket: userTicket
           });
           return;
         
@@ -337,11 +349,13 @@ exports.getCellByTranId = async (req, res, next) => {
           array_result.push(new cell(i+1, false))
       }
     }
+
+
     console.log(array)
     res.status(200).json({
       message: 'Get Cell Success',
       data: true,
-      result: array_result
+      seats: array_result
     })
     return
   }

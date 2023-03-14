@@ -134,6 +134,27 @@ class Ticket {
           console.error('Error:', err);
         }
       }
+      async getTicketByUserId(userId) {
+        try {
+    
+          // create connection pool
+          const pool = await mssql.connect(config.sql);
+          const query = ` SELECT * from ticket_detail
+                            JOIN ticket ON ticket.id = ticket_detail.ticket_id
+                          where user_id = @user_id`;
+    
+          // create a new request object
+          const result = await pool.request()
+            .input('user_id', mssql.INT, userId)
+            .query(query)
+    
+          console.log(result.recordset)
+          // return the result
+          return result.recordset;
+        } catch (err) {
+          console.error('Error:', err);
+        }
+      }
   }
   
 module.exports = Ticket;

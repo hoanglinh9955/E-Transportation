@@ -13,5 +13,7 @@ router.post('/getRoutes', tripController.getRoutes)
 
 
 router.post('/getAllTrips', tripController.getAllTrips)
+
+router.post('/getAllTripByType', tripController.getAllTripByType)
                         
 module.exports = router;    
