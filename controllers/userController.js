@@ -268,8 +268,10 @@ exports.createOrder = async (req, res, next) => {
   }
   const {transport_id, user_id, quantity, array_sit_number} = req.body;
   const ticket = new Ticket();
-  const result = await ticket.orderTicket(transport_id, user_id, quantity, array_sit_number)
-    .then(result => { return result })
+
+  let myString = JSON.stringify(array_sit_number);
+  const result = await ticket.orderTicket(transport_id, user_id, quantity, myString)
+    .then(result => { return result }) 
     .catch(err => console.log(err))
 
   if(result === 'sitting_is_full'){
