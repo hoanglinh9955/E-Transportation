@@ -20,4 +20,6 @@ router.post('/deleteRouteByRouteIdAndComId', companyController.deleteRouteByRout
 
 router.post('/getRoutesNameByComId', companyController.getRouteNameByComId);
 
+router.post('/getOutComeByComId', companyController.getOutComeByComId);
+
 module.exports = router;

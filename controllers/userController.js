@@ -6,11 +6,9 @@ const jwt = require('jsonwebtoken');
 const transporter = require('../utils/nodemailer')
 const { validationResult } = require('express-validator/check');
 
-const sendgrid = require('@sendgrid/mail');
 
-const API_KEY = "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";
 
-sendgrid.setApiKey(API_KEY);
+
 
 exports.register = async (req, res, next) => {
   const errors = validationResult(req);
@@ -288,23 +286,23 @@ exports.createOrder = async (req, res, next) => {
   const {transport_id, user_id, quantity, array_sit_number} = req.body;
   const ticket = new Ticket();
 
-  let myString = JSON.stringify(array_sit_number);
-  const result = await ticket.orderTicket(transport_id, user_id, quantity, myString)
+  
+  const result = await ticket.orderTicket(transport_id, user_id, quantity, array_sit_number)
     .then(result => { return result }) 
     .catch(err => console.log(err))
 
   if(result === 'sitting_is_full'){
     res.status(200).json({
-      message: "Please Order Another Trip, Ticket Of This Trip Is Sold Out !!!",
+      message: "Chyến Xe Không Đủ Chỗ ngồi, Bạn Vui Lòng Chọn Chuyến xe Khác",
       data: false
     })
     return
   }
     
   console.log(result)
-  if (result === undefined) {
+  if (result === undefined || result.length == 0) {
     res.status(200).json({
-      message: "Order Ticket False",
+      message: "Đặt Vé Thất Bại",
       data: false
     })
     return
@@ -312,9 +310,9 @@ exports.createOrder = async (req, res, next) => {
 
   if (result) {
     res.status(200).json({
-      message: 'Order Ticket Success',
+      message: 'Đặt Vé Thành Công',
       data: true,
-      ticket_id: result.recordset[0].ticket_id
+      ticket_id: result
     })
     return
   }
@@ -417,6 +415,45 @@ exports.getTicketByUserId = async (req, res, next) => {
     })
     return
   }
+
+  exports.cancelTicket = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error('Invalid Input');
+      error.statusCode = 200;
+      error.message = errors.errors[0].msg;
+      error.data = false;
+      next(error);
+    }
+    const {user_id, ticket_id, sit_number} = req.body;
+    const ticket = new Ticket();
+    const result = await ticket.cancelTicket(ticket_id, user_id, sit_number)
+      .then(result => { return result })
+      .catch(err => console.log(err))
+    if(result === 'cannotCancel'){
+      res.status(200).json({
+        message: "Xe Sắp Khởi Hành Trong 24 giờ Nữa, Vui Lòng Không Hủy Vé",
+        data: false
+      })
+      return
+    }
+      
+    console.log(result)
+    if (result === undefined || result.rowsAffected == 0) {
+      res.status(200).json({
+        message: "Hủy Vé Thất Bại",
+        data: false
+      })
+      return
+    }
+    if(result!= 'cannotCancel' && result)
+      res.status(200).json({
+        message: 'Hủy Vé Thành Công',
+        data: true,
+      })
+      return
+    }
+
   
 
 

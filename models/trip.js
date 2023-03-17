@@ -34,7 +34,7 @@ class Trip {
       JOIN company c ON r.company_id = c.id
       JOIN transportation tr ON tr.trip_id = t.id
       LEFT JOIN cell ON cell.transportation_id = tr.id
-     WHERE r.depart = @depart AND r.destination = @destination AND t.depart_date = @depart_date
+     WHERE r.depart = @depart AND r.destination = @destination AND t.depart_date = @depart_date AND t.status = '1' And r.status = '1'
      GROUP BY tr.id, t.begin_time, t.end_time, t.distance, t.price, 
        tr.name, tr.image_path, tr.type,
        r.depart, r.destination, t.depart_date,
@@ -61,7 +61,7 @@ class Trip {
   async getRoutes() {
     try {
       const pool = await mssql.connect(config.sql);
-      let query = `select route.depart, route.destination from route`;
+      let query = `select route.depart, route.destination from route where route.status = '1'`;
       const result = await pool.request()
         .query(query)
 
@@ -77,7 +77,7 @@ class Trip {
       const pool = await mssql.connect(config.sql);
       let query = `select route.depart, route.destination, route.id as route_id
                     from route join company on (route.company_id = company.id)
-                    where company.id = @company_id `;
+                    where company.id = @company_id and route.status = '1'`;
       const result = await pool.request()
         .input('company_id', mssql.Int, com_id)
         .query(query)
@@ -95,7 +95,7 @@ class Trip {
     if(trip_id ===undefined){
         //create trip 
         //check route if it exist.
-      let query1 = `select route.id AS route_id from route where route.company_id = @company_id and route.depart= @depart and route.destination = @destination`;
+      let query1 = `select route.id AS route_id from route where route.company_id = @company_id and route.depart= @depart and route.destination = @destination and route.status ='1'`;
       const checkRouteExist = await pool.request()
         .input('company_id', mssql.Int, parseInt(company_id))
         .input('depart', mssql.NVarChar, depart)
@@ -106,8 +106,8 @@ class Trip {
       // define route 
       var route;
       if (checkRouteExist.rowsAffected[0] == 0) {
-        let query2 = `INSERT INTO route (company_id, depart, destination) VALUES 
-          (@company_id, @depart, @destination);
+        let query2 = `INSERT INTO route (company_id, depart, destination, status) VALUES 
+          (@company_id, @depart, @destination, '1');
           SELECT SCOPE_IDENTITY() AS route_id;`
         route = await pool.request()
           .input('company_id', mssql.Int, company_id)
@@ -118,8 +118,8 @@ class Trip {
         
         //create new Route_Name 
         const route_name = depart + ' - ' + destination
-        let query5 = `INSERT INTO route_name (route_id, company_id ,route_name) 
-                      VALUES (@route_id, @company_id, @route_name);`
+        let query5 = `INSERT INTO route_name (route_id, company_id ,route_name, status) 
+                      VALUES (@route_id, @company_id, @route_name, '1');`
         const create_route_name = await pool.request()
           .input('route_id', mssql.Int, route.recordset[0].route_id)
           .input('company_id', mssql.Int, company_id)
@@ -131,8 +131,8 @@ class Trip {
 
 
       // Insert a new trip
-      let query3 = `INSERT INTO trip (route_id, begin_time, end_time, time , distance, price, depart_date) 
-                    VALUES (@route_id, @begin_time, @end_time, @time ,@distance, @price, @depart_date);
+      let query3 = `INSERT INTO trip (route_id, begin_time, end_time, time , distance, price, depart_date, status) 
+                    VALUES (@route_id, @begin_time, @end_time, @time ,@distance, @price, @depart_date, '1');
                     SELECT SCOPE_IDENTITY() AS trip_id;`
 
       const trip = await pool.request()
@@ -238,7 +238,7 @@ class Trip {
         //check route exist
         let query1 = `select route.depart, route.destination, route.id
                       from route join company on (route.company_id = company.id)
-                      where company.id = @company_id and depart = @depart and destination = @destination`;
+                      where company.id = @company_id and depart = @depart and destination = @destination and route.status = '1'`;
         const checkRoute = await pool.request()
           .input('company_id', mssql.Int, com_id)
           .input('depart', mssql.NVarChar, depart)
@@ -251,8 +251,8 @@ class Trip {
           return r;
         }
         //create route by comid
-        let query2 = `INSERT INTO [dbo].[route] (company_id, depart, destination)
-                      VALUES (@company_id, @depart, @destination);
+        let query2 = `INSERT INTO [dbo].[route] (company_id, depart, destination, status)
+                      VALUES (@company_id, @depart, @destination, '1');
                       SELECT SCOPE_IDENTITY() AS route_id; `;
         const result = await pool.request()
           .input('company_id', mssql.Int, com_id)
@@ -262,8 +262,8 @@ class Trip {
 
           //create new Route_Name 
         const route_name = depart + ' - ' + destination
-        let query5 = `INSERT INTO route_name (route_id, company_id, route_name) 
-                      VALUES (@route_id, @company_id, @route_name);`
+        let query5 = `INSERT INTO route_name (route_id, company_id, route_name, status) 
+                      VALUES (@route_id, @company_id, @route_name, '1');`
         const create_route_name = await pool.request()
           .input('route_id', mssql.Int, result.recordset[0].route_id)
           .input('company_id', mssql.Int, com_id)
@@ -278,7 +278,7 @@ class Trip {
         //check route exist
         let query1 = `select route.depart, route.destination, route.id
                       from route join company on (route.company_id = company.id)
-                      where company.id = @company_id and depart = @depart and destination = @destination`;
+                      where company.id = @company_id and depart = @depart and destination = @destination and route.status = '1'`;
         const checkRoute = await pool.request()
           .input('company_id', mssql.Int, com_id)
           .input('depart', mssql.NVarChar, depart)
@@ -322,7 +322,7 @@ class Trip {
         JOIN trip ON (route.id = trip.route_id)
         JOIN transportation ON (trip.id = transportation.trip_id)
         LEFT JOIN cell ON (transportation.id = cell.transportation_id)
-        WHERE company.id = @company_id
+        WHERE company.id = @company_id and trip.status = '1'
         GROUP BY route.depart, route.destination, trip.depart_date, trip.distance, trip.price,
                   trip.end_time, trip.begin_time, transportation.name, transportation.image_path,
                   transportation.type, route.id, trip.id, transportation.id;`;
@@ -340,7 +340,7 @@ class Trip {
   async getRouteNameByComId(com_id) {
     try {
       const pool = await mssql.connect(config.sql);
-      let query = ` select * from route_name where company_id = @company_id `;
+      let query = ` select * from route_name where company_id = @company_id and route_name.status = '1' `;
       const result = await pool.request()
         .input('company_id', mssql.Int, com_id)
         .query(query)
@@ -422,6 +422,7 @@ class Trip {
       JOIN company c ON r.company_id = c.id
       JOIN transportation tr ON tr.trip_id = t.id
       LEFT JOIN cell ON cell.transportation_id = tr.id
+      where r.status = '1' and t.status = '1'
      GROUP BY tr.id, t.begin_time, t.end_time, t.distance, t.price, 
        tr.name, tr.image_path, tr.type,
        r.depart, r.destination, t.depart_date,
@@ -457,7 +458,7 @@ class Trip {
       JOIN company c ON r.company_id = c.id
       JOIN transportation tr ON tr.trip_id = t.id
       LEFT JOIN cell ON cell.transportation_id = tr.id
-     WHERE r.depart = @depart AND r.destination = @destination AND t.depart_date = @depart_date AND tr.type = @type
+      where r.status = '1' and t.status = '1' and tr.type = @type
      GROUP BY tr.id, t.begin_time, t.end_time, t.distance, t.price, 
        tr.name, tr.image_path, tr.type,
        r.depart, r.destination, t.depart_date,
@@ -467,9 +468,6 @@ class Trip {
 
       // create a new request object
       const result = await pool.request()
-        .input('depart', mssql.NVarChar, depart)
-        .input('destination', mssql.NVarChar, destination)
-        .input('depart_date', mssql.NVarChar, depart_date)
         .input('type', mssql.Int, type)
         .query(query)
        

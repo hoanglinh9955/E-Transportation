@@ -269,3 +269,38 @@ exports.deleteRouteByRouteIdAndComId = async (req, res, next) => {
   }
   
 }
+exports.getOutComeByComId = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Invalid Input.');
+    error.statusCode = 200;
+    error.message = errors.errors[0].msg;
+    error.data = false;
+    next(error);
+    return
+  }
+    const company = new Company();
+    const company_id = req.body.company_id;
+
+  const result = await company.getOutComeByComId(company_id)
+    .then(result => { return result })
+    .catch(err => console.log(err))
+
+  console.log(result.recordset)
+  if (result.recordset.length == 0) {
+    res.status(200).json({
+      message: "Không Có Vé Nào được bán",
+      data: false
+    })
+    return
+  }
+
+  if (result.recordset) {
+    res.status(200).json({
+      message: 'lấy Doanh Thu Của Công Ty Thành Công',
+      data: true,
+      result: result.recordset
+    })
+    return
+  }
+}

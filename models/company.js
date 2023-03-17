@@ -120,6 +120,29 @@ class Company {
             console.log(err)
         }
     }
+    async getOutComeByComId(com_id) {
+        try {
+            // Connect to the database
+            const pool = await mssql.connect(config.sql);
+    
+            // Get the user from the database
+            const result = await pool.request()
+            .input('com_id', mssql.Int, com_id)
+            .query(`SELECT company.name as company_name, SUM(ticket.quantity * trip.price) AS total_amount,  SUM(ticket.quantity) AS total_tickets_sold
+                        FROM company 
+                        JOIN route ON route.company_id = company.id
+                        JOIN trip ON trip.route_id = route.id
+                        JOIN transportation ON transportation.trip_id = trip.id
+                        JOIN ticket ON ticket.transportation_id = transportation.id
+                        where company.id = @com_id
+                        GROUP BY company.id, company.name`);
+            
+            return result;
+            
+        } catch (err) {
+            console.log(err)
+        }
+    }
     
     }
 
