@@ -364,3 +364,41 @@ exports.getCellByTranId = async (req, res, next) => {
   
 }
 
+
+exports.getTicketByUserId = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Invalid Input');
+    error.statusCode = 200;
+    error.message = errors.errors;
+    error.data = false;
+    next(error);
+    return;
+  }
+  const {user_id} = req.body;
+  const ticket = new Ticket();
+  const result = await ticket.getTicketByUserId(user_id)
+    .then(result => { return result })
+    .catch(err => console.log(err))
+
+    
+  console.log(result)
+  if (result === undefined || result.length == 0) {
+    res.status(200).json({
+      message: "Don't Have Ticket Been Ordered !!!",
+      data: false
+    })
+    return
+  }
+
+    res.status(200).json({
+      message: 'Get Ticket Success',
+      data: true,
+      ticket: result
+    })
+    return
+  }
+  
+
+
+

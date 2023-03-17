@@ -24,4 +24,6 @@ router.post('/user/orderTicket', userController.createOrder);
 
 router.post('/user/getCell', userController.getCellByTranId);
 
+router.post('/user/getTicketByUserId', userController.getTicketByUserId)
+
 module.exports = router;
