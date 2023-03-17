@@ -294,12 +294,20 @@ exports.getOutComeByComId = async (req, res, next) => {
     })
     return
   }
+  const array = result.recordset
+  var total_amount = 0;
+  var total_tickets_sold = 0;
 
+  array.map(e => {
+    total_amount = total_amount + e.total_amount
+    total_tickets_sold = total_tickets_sold + e.quantity
+  })
   if (result.recordset) {
     res.status(200).json({
       message: 'lấy Doanh Thu Của Công Ty Thành Công',
       data: true,
-      result: result.recordset
+      total_amount: total_amount,
+      total_tickets_sold: total_tickets_sold 
     })
     return
   }

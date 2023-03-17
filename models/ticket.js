@@ -12,6 +12,9 @@ class Ticket {
 
       let myString = JSON.stringify(array_sit_number);
       var ticket_id_array = []
+      var trip_id;
+      var price;
+      var company_id;
       //check cell
       for (let i = 0; i < quantity; i++) {
 
@@ -56,7 +59,7 @@ class Ticket {
                 r.depart AS depart, r.destination AS destination, 
                 tr.begin_time AS beginTime, tr.end_time AS endTime, 
                 tr.distance AS distance, tr.price AS price, tr.depart_date AS departDate,
-                c.name AS companyName
+                c.name AS companyName, t.trip_id, c.id as company_id
                     FROM transportation t
                         JOIN trip tr ON t.trip_id = tr.id
                         JOIN route r ON tr.route_id = r.id
@@ -87,8 +90,18 @@ class Ticket {
                     INSERT INTO ticket_detail (ticket_id, order_date, company_name, depart, destination, depart_date, distance, price, end_time, begin_time, transport_name, image_path, type, user_name, sit_number)
                     VALUES (@ticket_id, @order_date, @companyName, @depart, @destination, @departDate, @distance, @price, @endTime, @beginTime, @tranportName, @image_path, @type, @user_name, @sit_number);    
                     `);
+          trip_id = getTicketDetail.recordset[0].trip_id
+          price = getTicketDetail.recordset[0].price
+          company_id = getTicketDetail.recordset[0].company_id
       }
-
+      const total_amount = await pool.request()
+      .input('trip_id', mssql.INT, trip_id)
+      .input('total_amount', mssql.INT, quantity*price)
+      .input('company_id', mssql.INT, company_id)
+      .input('quantity', mssql.INT, quantity)
+      .query(`INSERT INTO total_amount (trip_id, company_id, total_amount, quantity)
+              VALUES (@trip_id ,@company_id, @total_amount, @quantity)   
+                          `);
 
       const createCell = await pool.request()
         .input('transportation_id', mssql.INT, transport_id)

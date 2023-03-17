@@ -58,7 +58,7 @@ class User {
         
                 // Get the user from the database
                 const result = await pool.request()
-                .query('SELECT * FROM user_');
+                .query(`SELECT * FROM user_ where user_.role = 'USER';`)
                 
                 return result;
                 

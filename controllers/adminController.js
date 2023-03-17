@@ -16,7 +16,6 @@ exports.createCompany = async (req, res, next) => {
     const { name, email, password, address, hotline } = req.body;
     bcrypt.hash(password, 10, async (err, hash) => {
       if (err) {
-        console.log("this is err")
         return res.status(200).json({
           message: 'some thing went wrong, invalid input',
           data: false

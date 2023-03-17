@@ -34,7 +34,7 @@ class Trip {
       JOIN company c ON r.company_id = c.id
       JOIN transportation tr ON tr.trip_id = t.id
       LEFT JOIN cell ON cell.transportation_id = tr.id
-     WHERE r.depart = @depart AND r.destination = @destination AND t.depart_date = @depart_date AND t.status = '1' And r.status = '1'
+     WHERE r.depart = @depart AND r.destination = @destination AND t.depart_date = @depart_date AND t.status = '1' And r.status = '1' and c.status = '1'
      GROUP BY tr.id, t.begin_time, t.end_time, t.distance, t.price, 
        tr.name, tr.image_path, tr.type,
        r.depart, r.destination, t.depart_date,
@@ -77,7 +77,7 @@ class Trip {
       const pool = await mssql.connect(config.sql);
       let query = `select route.depart, route.destination, route.id as route_id
                     from route join company on (route.company_id = company.id)
-                    where company.id = @company_id and route.status = '1'`;
+                    where company.id = @company_id and route.status = '1' and company.status = '1'`;
       const result = await pool.request()
         .input('company_id', mssql.Int, com_id)
         .query(query)
@@ -238,7 +238,7 @@ class Trip {
         //check route exist
         let query1 = `select route.depart, route.destination, route.id
                       from route join company on (route.company_id = company.id)
-                      where company.id = @company_id and depart = @depart and destination = @destination and route.status = '1'`;
+                      where company.id = @company_id and depart = @depart and destination = @destination and route.status = '1' and company.status = '1'`;
         const checkRoute = await pool.request()
           .input('company_id', mssql.Int, com_id)
           .input('depart', mssql.NVarChar, depart)
@@ -322,7 +322,7 @@ class Trip {
         JOIN trip ON (route.id = trip.route_id)
         JOIN transportation ON (trip.id = transportation.trip_id)
         LEFT JOIN cell ON (transportation.id = cell.transportation_id)
-        WHERE company.id = @company_id and trip.status = '1'
+        WHERE company.id = @company_id and trip.status = '1' and company.status = '1'
         GROUP BY route.depart, route.destination, trip.depart_date, trip.distance, trip.price,
                   trip.end_time, trip.begin_time, transportation.name, transportation.image_path,
                   transportation.type, route.id, trip.id, transportation.id;`;
@@ -340,7 +340,9 @@ class Trip {
   async getRouteNameByComId(com_id) {
     try {
       const pool = await mssql.connect(config.sql);
-      let query = ` select * from route_name where company_id = @company_id and route_name.status = '1' `;
+      let query = ` select route_name.route_id,route_name.company_id, route_name.route_name from route_name 
+                      join company ON company.id = route_name.company_id
+                    where company_id = @company_id and route_name.status = '1' and company.status = '1' `;
       const result = await pool.request()
         .input('company_id', mssql.Int, com_id)
         .query(query)
@@ -355,45 +357,7 @@ class Trip {
   async deleteRouteByRouteIdAndComId(com_id, route_id){
     try {
       const pool = await mssql.connect(config.sql);
-      let query = `DELETE ticket_detail
-      FROM ticket_detail 
-        JOIN ticket ON ticket.id = ticket_detail.ticket_id
-        JOIN transportation ON ticket.transportation_id = transportation.id
-        JOIN trip ON transportation.trip_id = trip.id
-        JOIN route ON trip.id = route.id
-        JOIN company ON company.id = route.company_id
-      WHERE route.id = @route_id and company.id = @company_id;
-      DELETE ticket
-      FROM ticket
-        JOIN transportation ON ticket.transportation_id = transportation.id
-        JOIN trip ON transportation.trip_id = trip.id
-        JOIN route ON trip.id = route.id
-        JOIN company ON company.id = route.company_id
-      WHERE route.id = @route_id and company.id = @company_id;
-      DELETE cell
-      FROM cell
-        JOIN transportation ON cell.transportation_id = transportation.id
-        JOIN trip ON transportation.trip_id = trip.id
-        JOIN route ON trip.id = route.id
-        JOIN company ON company.id = route.company_id
-      WHERE route.id = @route_id and company.id = @company_id;
-      DELETE transportation
-      FROM transportation
-        JOIN trip ON trip.id = transportation.trip_id
-        JOIN route ON trip.route_id = route.id
-        JOIN company ON company.id = route.company_id
-      WHERE route.id = @route_id and company_id = @company_id;
-      DELETE route_name
-      WHERE route_name.route_id = @route_id;
-      DELETE trip 
-      FROM trip
-        JOIN route ON route.id = trip.route_id
-        JOIN company ON company.id = route.id
-      WHERE route.id = @route_id and company_id = @company_id
-      DELETE route
-      FROM route 
-        JOIN company ON route.company_id = company.id
-      WHERE route.id = @route_id and company.id = @company_id;
+      let query = `
       `;
       const result = await pool.request()
         .input('company_id', mssql.Int, com_id)
@@ -422,7 +386,7 @@ class Trip {
       JOIN company c ON r.company_id = c.id
       JOIN transportation tr ON tr.trip_id = t.id
       LEFT JOIN cell ON cell.transportation_id = tr.id
-      where r.status = '1' and t.status = '1'
+      where r.status = '1' and t.status = '1' and c.status = '1'
      GROUP BY tr.id, t.begin_time, t.end_time, t.distance, t.price, 
        tr.name, tr.image_path, tr.type,
        r.depart, r.destination, t.depart_date,
@@ -458,7 +422,7 @@ class Trip {
       JOIN company c ON r.company_id = c.id
       JOIN transportation tr ON tr.trip_id = t.id
       LEFT JOIN cell ON cell.transportation_id = tr.id
-      where r.status = '1' and t.status = '1' and tr.type = @type
+      where r.status = '1' and t.status = '1' and tr.type = @type and c.status = '1'
      GROUP BY tr.id, t.begin_time, t.end_time, t.distance, t.price, 
        tr.name, tr.image_path, tr.type,
        r.depart, r.destination, t.depart_date,

@@ -24,7 +24,8 @@ go
 create table route_name(
    route_id INT FOREIGN KEY REFERENCES route(id),
    company_id INT,
-   route_name NVARCHAR(50)
+   route_name NVARCHAR(50),
+   status INT
 );
 go
 create table trip(
@@ -63,6 +64,12 @@ create table ticket(
    user_id INT FOREIGN KEY REFERENCES user_(id),
    quantity INT,
    status INT
+);
+create table total_amount(
+   trip_id INT,
+   company_id INT,
+   total_amount INT,
+   quantity INT
 );
 go
 create table ticket_detail(
