@@ -217,8 +217,8 @@ exports.getRouteNameByComId = async (req, res, next) => {
     .then(result => { return result })
     .catch(err => console.log(err))
 
-  console.log(result.recordset)
-  if (result.recordset.length == 0) {
+  console.log(result)
+  if (result.recordset.length == 0 || result === undefined) {
     res.status(200).json({
       message: "Don't Have Route Name To Show",
       data: false
