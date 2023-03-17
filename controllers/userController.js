@@ -3,6 +3,7 @@ const Ticket = require('../models/ticket');
 const Company = require('../models/company');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const transporter = require('../utils/nodemailer')
 const { validationResult } = require('express-validator/check');
 
 const sendgrid = require('@sendgrid/mail');
@@ -78,6 +79,24 @@ exports.register = async (req, res, next) => {
           .then(result => { return result })
           .catch(err => console.log(err))
         //return res success to client
+        // setup email data
+          let mailOptions = {
+           from: '<e.transportation.saleticket@gmail.com>',
+           subject: 'Đăng Ký Tài Khoản Thành Công',
+           to: email,
+           html: `<h1>${name} Đã Đăng Ký Tài Khoản Thành Công</h1>`,
+           text: 'Bạn Đã Đăng Ký Tài Khoản Thành Công',
+};
+
+// send email with defined transport object
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+      console.log(error);
+  } else {
+      console.log('Message sent: %s', info.messageId);
+  }
+});
+
           return res.status(200).json({
             message: "Create User Success",
             data: true,

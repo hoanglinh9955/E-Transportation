@@ -314,7 +314,7 @@ class Trip {
     try {
       const pool = await mssql.connect(config.sql);
       let query = ` 	SELECT route.depart, route.destination, trip.depart_date, trip.distance, trip.price,
-      trip.end_time, trip.begin_time, transportation.name, transportation.image_path,
+      trip.end_time, trip.begin_time, transportation.name as transport_name, transportation.image_path,
       transportation.type, route.id as route_id, trip.id as trip_id, transportation.id as tran_id,
       COUNT(cell.sit_number) as seats
       FROM route
