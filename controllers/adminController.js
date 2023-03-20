@@ -6,7 +6,7 @@ const { validationResult } = require('express-validator/check');
 exports.createCompany = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const error = new Error('Invalid Input.');
+      const error = new Error('Lỗi.');
       error.statusCode = 200;
       error.message = errors.errors;
       error.data = false;
@@ -17,7 +17,7 @@ exports.createCompany = async (req, res, next) => {
     bcrypt.hash(password, 10, async (err, hash) => {
       if (err) {
         return res.status(200).json({
-          message: 'some thing went wrong, invalid input',
+          message: 'Lỗi. Xin Hãy Nhập Lại',
           data: false
         })
       }
@@ -38,7 +38,7 @@ exports.createCompany = async (req, res, next) => {
 
   if(findUser.recordset.length > 0){
       res.status(200).json({
-        message: 'User with that email is User email. Please use another email',
+        message: 'Email Này Là Email Của Người Dùng, Xin Hãy Đăng Ký Một Email Khác.',
         data: false
       });
       return
@@ -46,7 +46,7 @@ exports.createCompany = async (req, res, next) => {
       
       if (result.recordset[0]) {
         res.status(200).json({
-          message: 'Company with that email exist. Please use another email',
+          message: 'Email Công Ty Này Đã Tồn Tại, Xin Hãy Đăng Ký Một Email Khác.',
           data: false
         });
         return
@@ -57,7 +57,7 @@ exports.createCompany = async (req, res, next) => {
   
         if (!rs) {
           return res.status(200).json({
-            message: "Insert Company To Database False",
+            message: "Đăng Ký Công Ty Thất Bại",
             data: false
           })
         }
@@ -68,7 +68,7 @@ exports.createCompany = async (req, res, next) => {
             .catch(err => console.log(err))
           //return res success to client
             return res.status(200).json({
-              message: "Create Company Success",
+              message: "Đăng Ký Công Ty Thành Công",
               data: true,
               companyId: findCompany.recordset[0].id
           })
@@ -87,7 +87,7 @@ exports.createCompany = async (req, res, next) => {
   console.log(result)
   if (result.recordset.length == 0) {
     res.status(200).json({
-      message: "Don't Have Company To Show",
+      message: "Không Có Công Ty Nào Để Hiển Thị",
       data: false
     })
     return
@@ -95,7 +95,7 @@ exports.createCompany = async (req, res, next) => {
 
   if (result.recordset) {
     res.status(200).json({
-      message: 'Get All Company Success',
+      message: 'Hiển Thị Tất Cả Thông Tin Công Ty Thành Công.',
       data: true,
       result: result.recordset
     })
@@ -113,7 +113,7 @@ const result = await user.getAllUser()
 console.log(result)
 if (result.recordset.length == 0) {
   res.status(200).json({
-    message: "Don't Have User To Show",
+    message: "Không Có Người Dùng Nào Để Hiển Thị.",
     data: false
   })
   return
@@ -121,7 +121,7 @@ if (result.recordset.length == 0) {
 
 if (result.recordset) {
   res.status(200).json({
-    message: 'Get All Users Success',
+    message: 'Hiển Thị Tất Cả Các Người Dùng.',
     data: true,
     result: result.recordset
   })
@@ -133,7 +133,7 @@ exports.banCompanybyEmail = async (req, res, next) => {
   const errors = validationResult(req);
   console.log(errors.errors)
     if (!errors.isEmpty()) {
-      const error = new Error('invalid input');
+      const error = new Error('Lỗi');
       error.statusCode = 200;
       error.data = false;
       error.message = errors.errors
@@ -149,7 +149,7 @@ exports.banCompanybyEmail = async (req, res, next) => {
 
   if(findCom.rowsAffected[0] == 0){
     return res.status(200).json({
-      message: "Email Doesn't Exist",
+      message: "Email Này Không Tồn Tại.",
       data: false
   })
 }
@@ -160,7 +160,7 @@ exports.banCompanybyEmail = async (req, res, next) => {
 console.log(result)
 if (result.rowsAffected == 0) {
   res.status(200).json({
-    message: "Ban Company False",
+    message: "Khóa Tài Khoản Công Ty Thất Bại.",
     data: false
   })
   return
@@ -168,7 +168,7 @@ if (result.rowsAffected == 0) {
 
 if (result.rowsAffected > 0) {
   res.status(200).json({
-    message: 'Ban Company Success',
+    message: 'Khóa Tài Khoản Công Ty Thành Công.',
     data: true,
   })
   return
@@ -179,7 +179,7 @@ exports.unBanCompanybyEmail = async (req, res, next) => {
   const errors = validationResult(req);
   console.log(errors.errors)
     if (!errors.isEmpty()) {
-      const error = new Error('invalid input');
+      const error = new Error('Lỗi');
       error.statusCode = 200;
       error.data = false;
       error.message = errors.errors
@@ -195,7 +195,7 @@ exports.unBanCompanybyEmail = async (req, res, next) => {
 
   if(findCom.rowsAffected[0] == 0){
     return res.status(200).json({
-      message: "Email Doesn't Exist",
+      message: "Email Này Không Tồn Tại.",
       data: false
   })
 }
@@ -206,7 +206,7 @@ exports.unBanCompanybyEmail = async (req, res, next) => {
 console.log(result)
 if (result.rowsAffected == 0) {
   res.status(200).json({
-    message: "UnBan Company False",
+    message: "Mở Khóa Tài Khoản Công Ty Thất Bại.",
     data: false
   })
   return
@@ -214,7 +214,7 @@ if (result.rowsAffected == 0) {
 
 if (result.rowsAffected > 0) {
   res.status(200).json({
-    message: 'UnBan Company Success',
+    message: 'Mở Khóa Tài Khoản Công Ty Thành Công.',
     data: true,
   })
   return
@@ -225,7 +225,7 @@ exports.banUserbyEmail = async (req, res, next) => {
   const errors = validationResult(req);
   console.log(errors.errors)
     if (!errors.isEmpty()) {
-      const error = new Error('invalid input');
+      const error = new Error('Lỗi');
       error.statusCode = 200;
       error.data = false;
       error.message = errors.errors
@@ -241,7 +241,7 @@ exports.banUserbyEmail = async (req, res, next) => {
 
   if(findUser.rowsAffected[0] == 0){
     return res.status(200).json({
-      message: "Email Doesn't Exist",
+      message: "Email Này Không Tồn Tại.",
       data: false
   })
 }
@@ -252,7 +252,7 @@ exports.banUserbyEmail = async (req, res, next) => {
 console.log(result)
 if (result.rowsAffected == 0) {
   res.status(200).json({
-    message: "Ban User False",
+    message: "Khóa Tài Khoản Người Dùng Thất Bại",
     data: false
   })
   return
@@ -260,7 +260,7 @@ if (result.rowsAffected == 0) {
 
 if (result.rowsAffected > 0) {
   res.status(200).json({
-    message: 'Ban User Success',
+    message: 'Khóa Tài Khoản Người Dùng Thành Công',
     data: true,
   })
   return
@@ -271,7 +271,7 @@ exports.unBanUserbyEmail = async (req, res, next) => {
   const errors = validationResult(req);
   console.log(errors.errors)
     if (!errors.isEmpty()) {
-      const error = new Error('invalid input');
+      const error = new Error('Lỗi.');
       error.statusCode = 200;
       error.data = false;
       error.message = errors.errors
@@ -287,7 +287,7 @@ exports.unBanUserbyEmail = async (req, res, next) => {
 
   if(findUser.rowsAffected[0] == 0){
     return res.status(200).json({
-      message: "Email Doesn't Exist",
+      message: "Email Này Không Tồn Tại.",
       data: false
   })
 }
@@ -298,7 +298,7 @@ exports.unBanUserbyEmail = async (req, res, next) => {
 console.log(result)
 if (result.rowsAffected == 0) {
   res.status(200).json({
-    message: "UnBan User False",
+    message: "Mở Khóa Tài Khoản Người Dùng Thất Bại.",
     data: false
   })
   return
@@ -306,7 +306,7 @@ if (result.rowsAffected == 0) {
 
 if (result.rowsAffected > 0) {
   res.status(200).json({
-    message: 'UnBan User Success',
+    message: 'Mở Khóa Tài Khoản Người Dùng Thành Công.',
     data: true,
   })
   return
@@ -317,7 +317,7 @@ exports.updateCompany = async (req, res, next) => {
   const errors = validationResult(req);
   console.log(errors.errors)
     if (!errors.isEmpty()) {
-      const error = new Error('invalid input');
+      const error = new Error('Lỗi');
       error.statusCode = 200;
       error.data = false;
       error.message = errors.errors
@@ -333,7 +333,7 @@ exports.updateCompany = async (req, res, next) => {
 
   if(findCom.rowsAffected[0] == 0){
     return res.status(200).json({
-      message: "Email Doesn't Exist",
+      message: "Email Này Không Tồn Tại.",
       data: false
   })
 }
@@ -344,7 +344,7 @@ exports.updateCompany = async (req, res, next) => {
 console.log(result)
 if (result.rowsAffected == 0) {
   res.status(200).json({
-    message: "Update Company False",
+    message: "Cập Nhật Công Ty Thất Bại.",
     data: false
   })
   return
@@ -352,7 +352,7 @@ if (result.rowsAffected == 0) {
 
 if (result.rowsAffected > 0) {
   res.status(200).json({
-    message: 'Update Company Success',
+    message: 'Cập Nhật Công Ty Thành Công.',
     data: true,
   })
   return

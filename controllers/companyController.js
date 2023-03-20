@@ -8,7 +8,7 @@ const { validationResult } = require('express-validator/check');
 exports.getRouteByComId = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('Invalid Input.');
+    const error = new Error('Lỗi.');
     error.statusCode = 200;
     error.message = errors.errors;
     error.data = false;
@@ -25,7 +25,7 @@ exports.getRouteByComId = async (req, res, next) => {
   console.log(result.recordset)
   if (result.recordset.length == 0) {
     res.status(200).json({
-      message: "Don't Have Route To Show",
+      message: "Không Có Tuyến Đường Nào Để Hiển Thị.",
       data: false
     })
     return
@@ -33,7 +33,7 @@ exports.getRouteByComId = async (req, res, next) => {
 
   if (result.recordset) {
     res.status(200).json({
-      message: 'Get All Route Success',
+      message: 'Hiển Thị Tất Cả Các Tuyến Đường Thành Công.',
       data: true,
       result: result.recordset
     })
@@ -45,7 +45,7 @@ exports.createUpdateTripByCompany = async (req, res, next) => {
     
   const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const error = new Error('Invalid Input.');
+      const error = new Error('Lỗi.');
       error.statusCode = 200;
       error.message = errors.errors;
       error.data = false;
@@ -86,9 +86,9 @@ array_result.map(e => {
     if(req.body[count].route_id === undefined || 
        req.body[count].trip_id  === undefined || 
        req.body[count].tran_id  === undefined   ){
-      array_object.push(new Object_id('Update Trip False', false, [], [], []))
+      array_object.push(new Object_id('Tạo chuyến Xe Thất Bại.', false, [], [], []))
     }else{
-      array_object.push(new Object_id('Create Trip False', false, [], [], []))
+      array_object.push(new Object_id('Cập Nhật Chuyến Xe Thất Bại', false, [], [], []))
     }
   }
   if (e) {
@@ -96,16 +96,16 @@ array_result.map(e => {
        req.body[count].trip_id  === undefined || 
        req.body[count].tran_id  === undefined   ){
         
-        array_object.push(new Object_id('Create Trip Success', true, 
+        array_object.push(new Object_id('Tạo Chuyến Xe Thành Công.', true, 
           e.checkRouteExist === undefined ? e.route.recordset[0].route_id: e.checkRouteExist.recordset[0].route_id, 
           e.trip.recordset[0].trip_id, 
           e.transportation.recordset[0].transportation_id  
           ))
     }else{
       if(e === 'update_false'){
-        array_object.push(new Object('Update Trip False', false, []))
+        array_object.push(new Object('Cập Nhật Chuyến Xe Thất Bại', false, []))
       }else{
-        array_object.push(new Object('Update Trip Success', true, []))
+        array_object.push(new Object('Cập Nhật Chuyến Xe Thành Công', true, []))
       } 
     }
   }
@@ -118,7 +118,7 @@ array_result.map(e => {
 exports.createUpdateRouteByComId = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('Invalid Input.');
+    const error = new Error('Lỗi.');
     error.statusCode = 200;
     error.message = errors.errors;
     error.data = false;
@@ -142,20 +142,20 @@ const array_object = [];
 var count = 0;
 array_result.map(e => {
   if(e === 'route_exist'){
-    array_object.push(new Object('Route Is Exist !!!', false, []))
+    array_object.push(new Object('Tuyến Đường Đã Tồn Tại.', false, []))
   }
   if(e === undefined){
     if(req.body[count].route_id === undefined){
-      array_object.push(new Object('Create Route False', false, []))
+      array_object.push(new Object('Tạo Tuyến Đường Thành Công', false, []))
     }else{
-      array_object.push(new Object('Update Route False', false, []))
+      array_object.push(new Object('Cập Nhật Tuyến Đường Thất Bại', false, []))
     }
   }
   if (e && e != 'route_exist') {
     if(req.body[count].route_id === undefined){
-      array_object.push(new Object('Create Route Success', true, [{route_id: e.recordset[0].route_id}]))
+      array_object.push(new Object('Tạo Tuyến Đường Thành Công', true, [{route_id: e.recordset[0].route_id}]))
     }else{
-      array_object.push(new Object('Update Route Success', true, []))
+      array_object.push(new Object('Cập Nhật Tuyến Đường Thất Bại', true, []))
       }
     }
     console.log(array_object)
@@ -166,7 +166,7 @@ array_result.map(e => {
 exports.getTripsByComId = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('Invalid Input.');
+    const error = new Error('Lỗi.');
     error.statusCode = 200;
     error.message = errors.errors;
     error.data = false;
@@ -183,7 +183,7 @@ exports.getTripsByComId = async (req, res, next) => {
   console.log(result.recordset)
   if (result.recordset.length == 0) {
     res.status(200).json({
-      message: "Don't Have Trip To Show",
+      message: "Không Có Chuyến Xe Nào Để Hiển Thị.",
       data: false
     })
     return
@@ -191,7 +191,7 @@ exports.getTripsByComId = async (req, res, next) => {
 
   if (result.recordset) {
     res.status(200).json({
-      message: 'Get All trips Success',
+      message: 'Hiện Thị Tất Cả Các Tuyến Đường Thành Công',
       data: true,
       result: result.recordset
     })
@@ -203,7 +203,7 @@ exports.getTripsByComId = async (req, res, next) => {
 exports.getRouteNameByComId = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('Invalid Input.');
+    const error = new Error('Lỗi.');
     error.statusCode = 200;
     error.message = errors.errors;
     error.data = false;
@@ -220,7 +220,7 @@ exports.getRouteNameByComId = async (req, res, next) => {
   console.log(result)
   if (result.recordset.length == 0 || result === undefined) {
     res.status(200).json({
-      message: "Don't Have Route Name To Show",
+      message: "Không Có Tên Tuyến Đường Để Hiển Thị",
       data: false
     })
     return
@@ -228,7 +228,7 @@ exports.getRouteNameByComId = async (req, res, next) => {
 
   if (result.recordset) {
     res.status(200).json({
-      message: 'Get All Route Name Success',
+      message: 'Hiển Thị Tất Cả Các Tuyến Đường Thành Công',
       data: true,
       result: result.recordset
     })
@@ -239,7 +239,7 @@ exports.getRouteNameByComId = async (req, res, next) => {
 exports.deleteRouteByRouteIdAndComId = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('Invalid Input.');
+    const error = new Error('Lỗi.');
     error.statusCode = 200;
     error.message = errors.errors;
     error.data = false;
@@ -259,7 +259,7 @@ exports.deleteRouteByRouteIdAndComId = async (req, res, next) => {
 
   if (result) {
     res.status(200).json({
-      message: 'Delete Route Success',
+      message: 'Xóa Tuyến Đường Thành Công.',
       data: true,
       transportation: result.rowsAffected[3],
       trip: result.rowsAffected[5],
@@ -272,7 +272,7 @@ exports.deleteRouteByRouteIdAndComId = async (req, res, next) => {
 exports.getOutComeByComId = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('Invalid Input.');
+    const error = new Error('Lỗi.');
     error.statusCode = 200;
     error.message = errors.errors[0].msg;
     error.data = false;

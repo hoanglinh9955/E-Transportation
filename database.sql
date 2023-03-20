@@ -54,7 +54,7 @@ create table transportation(
    id INT PRIMARY KEY NOT NULL identity(1,1),
    trip_id INT FOREIGN KEY REFERENCES trip(id),
    type int,
-   image_path NVARCHAR(50),
+   image_path NVARCHAR(Max),
    name NVARCHAR(50)
 );
 go

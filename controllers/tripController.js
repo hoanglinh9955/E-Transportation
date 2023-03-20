@@ -4,7 +4,7 @@ const { validationResult } = require('express-validator/check');
 exports.getTrips = async (req, res, next) => {
   const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const error = new Error('Invalid Input.');
+      const error = new Error('Lỗi Nhập.');
       error.statusCode = 200;
       error.message = errors.errors;
       error.data = false;
@@ -24,7 +24,7 @@ exports.getTrips = async (req, res, next) => {
   console.log(result);
   if (result.recordset.length == 0) {
     res.status(200).json({
-      message: "Don't Have Trip To Get",
+      message: "Không Có Chuyến Xe Nào Trong Cơ Sở Dữ Liệu.",
       data: false
     })
     return
@@ -32,7 +32,7 @@ exports.getTrips = async (req, res, next) => {
 
   if (result.recordset) {
     res.status(200).json({
-      message: "Get Trip Success",
+      message: "Lấy chuyến Xe Thành Công",
       data: true,
       result: result.recordset
     })
@@ -50,7 +50,7 @@ exports.getRoutes = async (req, res, next) => {
   console.log(result)
   if (result.recordset.length == 0) {
     res.status(200).json({
-      message: "Don't Have Route To Get",
+      message: "Không Có Tuyến Đường Nào Để Hiển Thị",
       data: false
     })
     return
@@ -58,7 +58,7 @@ exports.getRoutes = async (req, res, next) => {
 
   if (result.recordset) {
     res.status(200).json({
-      message: 'get depart success',
+      message: 'Hiển Thị Điểm Đến Thành Công.',
       data: true,
       result: result.recordset
     })
@@ -69,7 +69,7 @@ exports.getRoutes = async (req, res, next) => {
 exports.getAllTrips = async (req, res, next) => {
   const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const error = new Error('Invalid Input.');
+      const error = new Error('Lỗi.');
       error.statusCode = 200;
       error.message = errors.errors;
       error.data = false;
@@ -86,7 +86,7 @@ exports.getAllTrips = async (req, res, next) => {
   console.log(result);
   if (result.recordset.length == 0) {
     res.status(200).json({
-      message: "Don't Have Trip To Get",
+      message: "Không Có Chuyến Xe Nào Để Hiển Thị.",
       data: false
     })
     return
@@ -94,7 +94,7 @@ exports.getAllTrips = async (req, res, next) => {
 
   if (result.recordset) {
     res.status(200).json({
-      message: "Get Trip Success",
+      message: "Hiển Chuyến Xe Thành Công",
       data: true,
       result: result.recordset
     })
@@ -104,7 +104,7 @@ exports.getAllTrips = async (req, res, next) => {
 exports.getAllTripByType = async (req, res, next) => {
   const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const error = new Error('Invalid Input.');
+      const error = new Error('Lỗi.');
       error.statusCode = 200;
       error.message = errors.errors;
       error.data = false;
@@ -121,7 +121,7 @@ exports.getAllTripByType = async (req, res, next) => {
   console.log(result);
   if (result.recordset.length == 0) {
     res.status(200).json({
-      message: "Don't Have Trip To Get",
+      message: "Không Có Chuyến Xe Nào Để Hiển Thị",
       data: false
     })
     return
@@ -129,7 +129,7 @@ exports.getAllTripByType = async (req, res, next) => {
 
   if (result.recordset) {
     res.status(200).json({
-      message: "Get Trip Success",
+      message: "Hiển Thị Chuyến Xe Thành Công",
       data: true,
       result: result.recordset
     })

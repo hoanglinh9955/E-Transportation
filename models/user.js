@@ -50,8 +50,8 @@ class User {
             console.log(err)
         }
 
-        }
-        async getAllUser() {
+    }
+    async getAllUser() {
             try {
                 // Connect to the database
                 const pool = await mssql.connect(config.sql);
@@ -65,8 +65,8 @@ class User {
             } catch (err) {
                 console.log(err)
             }
-        } 
-        async banUserByEmail(email) {
+    } 
+    async banUserByEmail(email) {
             try {
                 // Connect to the database
                 const pool = await mssql.connect(config.sql);
@@ -88,8 +88,8 @@ class User {
             } catch (err) {
                 console.log(err)
             }
-        }
-        async unBanUserByEmail(email) {
+    }
+    async unBanUserByEmail(email) {
             try {
                 // Connect to the database
                 const pool = await mssql.connect(config.sql);
@@ -104,7 +104,30 @@ class User {
             } catch (err) {
                 console.log(err)
             }
+    }
+    async forgetPassword(email, password) {
+        try {
+            // Connect to the database
+            const pool = await mssql.connect(config.sql);
+
+            // Insert the user into the database
+            const result = await pool.request()
+    
+                .input('email', mssql.NVarChar, email)
+                .input('password', mssql.INT, password)
+                .query(`UPDATE user_ 
+                        SET password = @password 
+                        WHERE user_.email = @email;`);
+
+              console.log(result)
+            // Return success
+            return result;
+        } catch (error) {
+            console.log(error)
+            
         }
+    }
+    
     }
 
 module.exports = User;

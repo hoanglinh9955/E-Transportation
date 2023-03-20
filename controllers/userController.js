@@ -4,7 +4,7 @@ const Company = require('../models/company');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const transporter = require('../utils/nodemailer')
-const { validationResult } = require('express-validator/check');
+const { validationResult, check } = require('express-validator/check');
 
 
 
@@ -14,7 +14,7 @@ exports.register = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors.errors)
-    const error = new Error('Invalid Input');
+    const error = new Error('Lỗi');
     error.statusCode = 200;
     error.message = errors.errors[0].msg;
     error.data = false;
@@ -26,7 +26,7 @@ exports.register = async (req, res, next) => {
     if (err) {
       console.log("this is err")
       return res.status(200).json({
-        message: 'some thing went wrong, invalid input',
+        message: 'Lỗi, Xin Lỗi Bạn Vì Sự Bất Tiện Này.',
         data: false
       })
     }
@@ -46,7 +46,7 @@ exports.register = async (req, res, next) => {
     console.log('company test')
     if(findCom.recordset.length > 0){
         res.status(200).json({
-          message: 'User with that email is Company email. Please use another email',
+          message: 'Email Này Là Email Công Ty, Xin Hãy Đăng Ký Bằng Một Email Khác.',
           data: false
         });
         return
@@ -54,7 +54,7 @@ exports.register = async (req, res, next) => {
     
     if (result.recordset.length > 0) {
       res.status(200).json({
-        message: 'User with that email exist. Please use another email',
+        message: 'Email Này Tồn Tại, Xin Hãy Đăng Ký Bằng Một Email Khác.',
         data: false
       });
       return
@@ -66,7 +66,7 @@ exports.register = async (req, res, next) => {
 
       if (!rs) {
         return res.status(200).json({
-          message: "Insert To Database False",
+          message: "Thêm Tài Khoản Vào Cơ Sở Dữ Liệu Thất Bại.",
           data: false
         })
       }
@@ -82,7 +82,11 @@ exports.register = async (req, res, next) => {
            from: '<e.transportation.saleticket@gmail.com>',
            subject: 'Đăng Ký Tài Khoản Thành Công',
            to: email,
-           html: `<h1>${name} Đã Đăng Ký Tài Khoản Thành Công</h1>`,
+           html: `<h1>${name} Đã Đăng Ký Tài Khoản Thành Công</h1>
+                  <h3> Đây Là Email Xác Nhận, Không Cần Phản Hồi <h3/>
+                  <h3> Nếu Bạn Cần Hỗ Trợ <h3/>
+                  <h3> HotLine: 1999 0000 <h3/>
+                  <h3> Email: e.transportation.saleticket@gmail.com <h3/>`,
            text: 'Bạn Đã Đăng Ký Tài Khoản Thành Công',
 };
 
@@ -108,7 +112,7 @@ transporter.sendMail(mailOptions, (error, info) => {
 exports.login = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('Invalid Input');
+    const error = new Error('Lỗi');
     error.statusCode = 200;
     error.message = errors.errors[0].msg;
     error.data = false;
@@ -132,7 +136,7 @@ exports.login = async (req, res, next) => {
 
   if (!(findUser.recordset.length > 0|| findCom.recordset.length > 0)) {
     res.status(200).json({
-      message: 'Email does not exist. Please signup',
+      message: 'Email Không Tồn Tại, Hãy Đăng Ký Tài Mới',
       data: false
     });
     return;
@@ -166,7 +170,7 @@ exports.login = async (req, res, next) => {
           );
       
           res.status(200).json({
-            message: 'Login successed',
+            message: 'Đăng Nhập Thành Công',
             data: true,
             token: token,
             companyId: loadedCom.id.toString(),
@@ -190,7 +194,7 @@ exports.login = async (req, res, next) => {
       // user is correct
       try {
         if(!(password === loadedUser.password)){
-          const error = new Error('Wrong password!');
+          const error = new Error('Sai Mật Khẩu');
               error.statusCode = 200;
               error.message = 'Sai Mật Khẩu'
               error.data = false;
@@ -213,7 +217,7 @@ exports.login = async (req, res, next) => {
             .catch(err => console.log(err))
      
           res.status(200).json({
-            message: 'Login successed',
+            message: 'Đăng Nhập Thành Công',
             data: true,
             token: token,
             userId: loadedUser.id.toString(),
@@ -276,7 +280,7 @@ exports.login = async (req, res, next) => {
 exports.createOrder = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('Invalid Input');
+    const error = new Error('Lỗi');
     error.statusCode = 200;
     error.message = errors.errors;
     error.data = false;
@@ -323,7 +327,7 @@ exports.createOrder = async (req, res, next) => {
 exports.getCellByTranId = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('Invalid Input');
+    const error = new Error('Lỗi');
     error.statusCode = 200;
     error.message = errors.errors;
     error.data = false;
@@ -340,7 +344,7 @@ exports.getCellByTranId = async (req, res, next) => {
   console.log(result)
   if (result === undefined) {
     res.status(200).json({
-      message: "Don't Have Sit Been Ordered !!!",
+      message: "Không Có Chỗ Ngồi Nào Được Đặt",
       data: false
     })
     return
@@ -372,7 +376,7 @@ exports.getCellByTranId = async (req, res, next) => {
 
     console.log(array)
     res.status(200).json({
-      message: 'Get Cell Success',
+      message: 'Lấy Chỗ Ngồi Thành Công',
       data: true,
       seats: array_result
     })
@@ -385,7 +389,7 @@ exports.getCellByTranId = async (req, res, next) => {
 exports.getTicketByUserId = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('Invalid Input');
+    const error = new Error('Lỗi');
     error.statusCode = 200;
     error.message = errors.errors;
     error.data = false;
@@ -402,24 +406,24 @@ exports.getTicketByUserId = async (req, res, next) => {
   console.log(result)
   if (result === undefined || result.length == 0) {
     res.status(200).json({
-      message: "Don't Have Ticket Been Ordered !!!",
+      message: "Bạn Không Có Vé Nào Đã Mua",
       data: false
     })
     return
   }
 
     res.status(200).json({
-      message: 'Get Ticket Success',
+      message: 'Đặt Vé Thành Công',
       data: true,
       ticket: result
     })
     return
-  }
+}
 
-  exports.cancelTicket = async (req, res, next) => {
+exports.cancelTicket = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const error = new Error('Invalid Input');
+      const error = new Error('Lỗi');
       error.statusCode = 200;
       error.message = errors.errors[0].msg;
       error.data = false;
@@ -452,9 +456,144 @@ exports.getTicketByUserId = async (req, res, next) => {
         data: true,
       })
       return
-    }
+}
+
+exports.forgetPassword = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Lỗi');
+    error.statusCode = 200;
+    error.message = errors.errors[0].msg;
+    error.data = false;
+    next(error);
+  }
+  const {email} = req.body;
+  const user = new User();
+    const checkUser = await user.findOne(email)
+      .then(result => { return result })
+      .catch(err => console.log(err))
+
+  if(checkUser === undefined || checkUser.recordset.length == 0){
+  
+      res.status(200).json({
+        message: "Email Này Không Tồn Tại, Xin Hãy Nhập Một Email Khác.",
+        data: false
+      })
+      return
+  } 
+  const randomPassword = Math.floor(Math.random() * 900000) + 100000;
+
+  const result = await user.forgetPassword(email, randomPassword)
+    .then(result => { return result })
+    .catch(err => console.log(err))
+    console.log(result)
+
+  if(result === undefined || result.rowsAffected[0] <= 0){
+    res.status(200).json({
+      message: "Gửi Mật Khẩu Cho Người Dùng Thất Bại",
+      data: false
+    })
+    return
+  }
+    
+  console.log(result)
+
+  if(result.rowsAffected[0] > 0){
+    let mailOptions = {
+      from: '<e.transportation.saleticket@gmail.com>',
+      subject: 'Lấy Mật Khẩu Thành Công',
+      to: email,
+      html: `<h3> ${randomPassword} là Mật Khẩu Tạm Thời Của Bạn.</h3>
+             <h3> Xin Hãy Đổi Mật Khẩu Để Bảo Mật Thông Tin <h3/>
+             <h3> Nếu Bạn Cần Hỗ Trợ <h3/>
+             <h3> HotLine: 1999 0000 <h3/>
+             <h3> Email: e.transportation.saleticket@gmail.com <h3/>`,
+      text: 'Lấy Mật Khẩu Thành Công',
+};
+
+// send email with defined transport object
+transporter.sendMail(mailOptions, (error, info) => {
+if (error) {
+ console.log(error);
+} else {
+ console.log('Message sent: %s', info.messageId);
+}
+});
+    res.status(200).json({
+      message: 'Gửi Mật Khẩu Đến Người Dùng Thành Công',
+      data: true,
+    })
+    return
+  }
+
+}
+
+exports.resetPassword = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Lỗi');
+    error.statusCode = 200;
+    error.message = errors.errors[0].msg;
+    error.data = false;
+    next(error);
+  }
+  const user = new User();
+  const {email, password, confirmPassword} = req.body;
+
+  if(password !== confirmPassword){
+    res.status(200).json({
+      message: "Mật Khẩu Xác Nhận Không Trùng.",
+      data: false
+    })
+    return
+  }
 
   
+
+  const result = await user.forgetPassword(email, confirmPassword)
+    .then(result => { return result })
+    .catch(err => console.log(err))
+    console.log(result)
+
+  if(result === undefined || result.rowsAffected[0] <= 0){
+    res.status(200).json({
+      message: "Đổi Mật Khẩu Thất Bại.",
+      data: false
+    })
+    return
+  }
+    
+  console.log(result)
+
+  if(result.rowsAffected[0] > 0){
+    let mailOptions = {
+      from: '<e.transportation.saleticket@gmail.com>',
+      subject: 'Đổi Mật Khẩu Thành Công',
+      to: email,
+      html: `
+             <h3> Nếu Bạn Cần Hỗ Trợ <h3/>
+             <h3> Hãy Liên Hệ Với Chúng Tôi<h3/>
+             <h3> HotLine: 19990000 <h3/>
+             <h3> Email: e.transportation.saleticket@gmail.com <h3/>`,
+      text: 'Đổi Mật Khẩu Thành Công',
+};
+
+// send email with defined transport object
+transporter.sendMail(mailOptions, (error, info) => {
+if (error) {
+ console.log(error);
+} else {
+ console.log('Message sent: %s', info.messageId);
+}
+});
+    res.status(200).json({
+      message: 'Đổi Mật Khẩu Thành Công.',
+      data: true,
+    })
+    return
+  }
+
+}
 
 
 
