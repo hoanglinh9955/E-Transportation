@@ -224,6 +224,7 @@ exports.login = async (req, res, next) => {
             role: loadedUser.role,
             status: loadedUser.status,
             user_name: loadedUser.name,
+            phone_number: loadedUser.phone_number,
             ticket: userTicket
           });
           return;
