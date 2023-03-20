@@ -221,6 +221,7 @@ exports.login = async (req, res, next) => {
             data: true,
             token: token,
             userId: loadedUser.id.toString(),
+            user_email: loadedUser.email,
             role: loadedUser.role,
             status: loadedUser.status,
             user_name: loadedUser.name,
