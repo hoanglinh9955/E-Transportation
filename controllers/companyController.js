@@ -3,6 +3,7 @@ const Trips = require('../models/trip');
 const { Object, Object_id } = require('../models/object');
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator/check');
+const moment = require('moment')
 
 
 exports.getRouteByComId = async (req, res, next) => {
@@ -58,10 +59,9 @@ exports.createUpdateTripByCompany = async (req, res, next) => {
   for(i = 0;i < quantity_line; i++){
     const {company_id, depart, destination, distance, price, end_time, begin_time, transport_name, image_path, type, route_id, trip_id, tran_id } = req.body[i]
     
-    const input = begin_time;
-    const dateObj = new Date(input);
-    const isoString = dateObj.toISOString();
-    const depart_date = isoString.slice(0, 10);
+    const depart_date = moment(begin_time).format('YYYY-MM-DD');
+
+  
 
     const date1 = new Date(begin_time);
     const date2 = new Date(end_time);

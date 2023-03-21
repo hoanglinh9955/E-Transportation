@@ -223,6 +223,35 @@ class Ticket {
       console.error('Error:', err);
     }
   }
+  async getTicketDetail(tran_id, ticket_id) {
+    try {
+
+      // create connection pool
+      const result = await pool.request()
+          .input('transportation_id', mssql.INT, tran_id)
+          .input('ticket_id', mssql.INT, ticket_id)
+          .query(`
+            SELECT 
+                t.type, user_.name as user_name, user_.id as user_id , t.image_path, t.name AS transportName, 
+                r.depart AS depart, r.destination AS destination, 
+                tr.begin_time AS beginTime, tr.end_time AS endTime, 
+                tr.distance AS distance, tr.price AS price, tr.depart_date AS departDate,
+                c.name AS companyName, t.trip_id, c.id as company_id
+                    FROM transportation t
+                        JOIN trip tr ON t.trip_id = tr.id
+                        JOIN route r ON tr.route_id = r.id
+                        JOIN company c ON r.company_id = c.id
+						JOIN ticket ON ticket.id = @ticket_id
+						JOIN user_ ON user_.id = ticket.user_id
+                WHERE t.id = @transportation_id;`)
+
+        console.log(getTicketDetail)
+      // return the result
+      return result;
+    } catch (err) {
+      console.error('Error:', err);
+    }
+  }
 
 }
 
