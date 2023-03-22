@@ -385,7 +385,7 @@ exports.getCellByTranId = async (req, res, next) => {
     const array = result.recordset;
     const array_result = [];
     for (i = 0; i < type; i++) {
-      check = false;
+      var check = false;
       array.map(e => {
         if (e.sit_number === i + 1) {
           array_result.push(new cell(i + 1, true))
