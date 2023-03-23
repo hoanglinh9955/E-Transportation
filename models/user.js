@@ -127,7 +127,24 @@ class User {
             
         }
     }
-    
+    async getUserEmail(user_id) {
+        try {
+            // Connect to the database
+            const pool = await mssql.connect(config.sql);
+
+            // Insert the user into the database
+            const result = await pool.request()
+                .input('user_id', mssql.Int, user_id)
+                .query('SELECT email from user_ where user_.id = @user_id');
+
+              console.log(result)
+            // Return success
+            return result;
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
     }
 
 module.exports = User;

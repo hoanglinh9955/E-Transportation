@@ -305,7 +305,6 @@ exports.createOrder = async (req, res, next) => {
     return
   }
 
-  console.log(result)
   if (result === undefined || result.length == 0) {
     res.status(200).json({
       message: "Đặt Vé Thất Bại",
@@ -315,27 +314,55 @@ exports.createOrder = async (req, res, next) => {
   }
 
   if (result) {
+    var ticketID = result
+    var array = [];
+    for(let i = 0; i < quantity; i++){
+      array.push(ticketID[i].ticket_id)
+    }
+  
+    const ticketArray = []
+    for(let i = 0; i < quantity; i++){
+      const ticketDetail = await ticket.getTicketDetail(user_id, array[i])
+        .then(result => { return result })
+        .catch(err => console.log(err))
+        ticketArray.push(ticketDetail.recordset[0])
+    }
+    
+    const user = new User();
+    user_email = await user.getUserEmail(user_id)
+    .then(result => { return result })
+    .catch(err => console.log(err))
+    console.log(user_email.recordset[0].email)
+    var seats = ''
+    for(let i = 0; i < quantity; i++){
+      const number = array_sit_number[i];
+      seats = seats + number + ', '
+    }
+    const price = quantity * ticketArray[0].price
+    
+    let mailOptions = {
+      from: '<e.transportation.saleticket@gmail.com>',
+      subject: 'Đặt Vé Thành Công',
+      to: user_email.recordset[0].email,
+      html: `<h1>Bạn ${ticketArray[0].user_name} Đã Đặt ${quantity} Vé Xe Từ Công Ty ${ticketArray[0].company_name} Thành Công </h1>
+             <h3> Thời Gian Xe Khởi Hành Lúc : ${ticketArray[0].begin_time} <h3/>
+             <h3> Ngày : ${ticketArray[0].depart_date}<h3/>
+             <h3> Đi Từ ${ticketArray[0].depart} Đến ${ticketArray[0].destination}<h3/>
+             <h3> Tổng Giá Vé : ${price}<h3/>
+             <h3> Vị Trí Ghế Ngồi : ${seats}<h3/>
+             <h3> HotLine: 19990000 <h3/>
+             <h3> Email: e.transportation.saleticket@gmail.com <h3/>`,
+      text: 'Bạn Đã Đăng Ký Tài Khoản Thành Công',
+    };
 
-    // let mailOptions = {
-    //   from: '<e.transportation.saleticket@gmail.com>',
-    //   subject: 'Đăng Ký Tài Khoản Thành Công',
-    //   to: email,
-    //   html: `<h1>${name} Đã Đăng Ký Tài Khoản Thành Công</h1>
-    //          <h3> Đây Là Email Xác Nhận, Không Cần Phản Hồi <h3/>
-    //          <h3> Nếu Bạn Cần Hỗ Trợ <h3/>
-    //          <h3> HotLine: 1999 0000 <h3/>
-    //          <h3> Email: e.transportation.saleticket@gmail.com <h3/>`,
-    //   text: 'Bạn Đã Đăng Ký Tài Khoản Thành Công',
-    // };
-
-    // // send email with defined transport object
-    // transporter.sendMail(mailOptions, (error, info) => {
-    //   if (error) {
-    //     console.log(error);
-    //   } else {
-    //     console.log('Message sent: %s', info.messageId);
-    //   }
-    // });
+    // send email with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Message sent: %s', info.messageId);
+      }
+    });
 
     res.status(200).json({
       message: 'Đặt Vé Thành Công',
