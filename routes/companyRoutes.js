@@ -22,4 +22,6 @@ router.post('/getRoutesNameByComId', companyController.getRouteNameByComId);
 
 router.post('/getOutComeByComId', companyController.getOutComeByComId);
 
+router.post('/fetchRoutes', companyController.fetchRoutes);
+
 module.exports = router;

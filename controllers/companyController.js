@@ -312,3 +312,40 @@ exports.getOutComeByComId = async (req, res, next) => {
     return
   }
 }
+
+exports.fetchRoutes = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Lỗi.');
+    error.statusCode = 200;
+    error.message = errors.errors[0].msg;
+    error.data = false;
+    next(error);
+    return
+  }
+    const company = new Company();
+
+
+  const result = await company.fetchRoutes()
+    .then(result => { return result })
+    .catch(err => console.log(err))
+
+  console.log(result.recordset)
+  if (result.recordset.length <= 0 ) {
+    res.status(200).json({
+      message: "Nạp Dữ Liệu Thất Bại !!!",
+      data: false
+    })
+    return
+  }
+ 
+  if (result.recordset) {
+    res.status(200).json({
+      message: 'Lấy Dữ Liệu Tuyến Đường Thành Công !!!',
+      data: true,
+      result: result.recordset
+    })
+    return
+  }
+}
+

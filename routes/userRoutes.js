@@ -32,4 +32,5 @@ router.post('/user/forgetPassword', userController.forgetPassword);
 
 router.post('/user/resetPassword', userController.resetPassword)
 
+
 module.exports = router;

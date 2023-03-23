@@ -136,6 +136,22 @@ class Company {
             console.log(err)
         }
     }
+    async fetchRoutes() {
+        try {
+            // Connect to the database
+            const pool = await mssql.connect(config.sql);
+    
+            // Get the user from the database
+            const result = await pool.request()
+            .query(`select depart, destination from [dbo].[route]
+                    group by depart, destination`);
+            
+            return result;
+            
+        } catch (err) {
+            console.log(err)
+        }
+    }
     
     }
 
