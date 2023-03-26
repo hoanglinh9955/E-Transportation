@@ -34,7 +34,13 @@ class Trip {
       JOIN company c ON r.company_id = c.id
       JOIN transportation tr ON tr.trip_id = t.id
       LEFT JOIN cell ON cell.transportation_id = tr.id
-     WHERE r.depart = @depart AND r.destination = @destination AND t.depart_date = @depart_date AND t.status = '1' And r.status = '1' and c.status = '1'
+     WHERE r.depart = @depart 
+     AND r.destination = @destination 
+     AND t.depart_date = @depart_date 
+     AND t.status = '1' 
+     And r.status = '1' 
+     and c.status = '1'
+     AND CONVERT(DATE, t.depart_date) > CONVERT(DATE, GETDATE())
      GROUP BY tr.id, t.begin_time, t.end_time, t.distance, t.price, 
        tr.name, tr.image_path, tr.type,
        r.depart, r.destination, t.depart_date,
@@ -379,18 +385,23 @@ class Trip {
       SELECT tr.id as transport_id, t.begin_time, t.end_time, t.distance, t.price, 
       tr.name as transport_name, tr.image_path, tr.type,
       r.depart, r.destination, t.depart_date,
-       c.name as company_name, c.address, c.hotline, c.email, c.status, c.role,
-       COUNT(cell.sit_number) as seats, t.time
+      c.name as company_name, c.address, c.hotline, c.email, c.status, c.role,
+      COUNT(cell.sit_number) as seats, t.time
      FROM trip t 
       JOIN route r ON t.route_id = r.id
       JOIN company c ON r.company_id = c.id
       JOIN transportation tr ON tr.trip_id = t.id
       LEFT JOIN cell ON cell.transportation_id = tr.id
-      where r.status = '1' and t.status = '1' and c.status = '1'
+      WHERE r.status = '1' 
+        AND t.status = '1' 
+        AND c.status = '1'
+        AND CONVERT(DATE, t.depart_date) > CONVERT(DATE, GETDATE())
      GROUP BY tr.id, t.begin_time, t.end_time, t.distance, t.price, 
        tr.name, tr.image_path, tr.type,
        r.depart, r.destination, t.depart_date,
-       c.name, c.address, c.hotline, c.email, c.status, c.role, t.time
+       c.name, c.address, c.hotline, c.email, c.status, c.role, t.time 
+
+
  ;
 `;
 
@@ -406,7 +417,7 @@ class Trip {
       console.error('Error:', err);
     }
   }
-  async getTripByType(depart, destination, depart_date, type) {
+  async getTripByType(type) {
     try {
 
       // create connection pool
@@ -423,6 +434,7 @@ class Trip {
       JOIN transportation tr ON tr.trip_id = t.id
       LEFT JOIN cell ON cell.transportation_id = tr.id
       where r.status = '1' and t.status = '1' and tr.type = @type and c.status = '1'
+      AND CONVERT(DATE, t.depart_date) > CONVERT(DATE, GETDATE())
      GROUP BY tr.id, t.begin_time, t.end_time, t.distance, t.price, 
        tr.name, tr.image_path, tr.type,
        r.depart, r.destination, t.depart_date,

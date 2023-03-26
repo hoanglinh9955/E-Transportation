@@ -113,8 +113,8 @@ exports.getAllTripByType = async (req, res, next) => {
     }
  
   const trips = new Trips();
-  const {depart, destination, depart_date, type} = req.body
-  const result = await trips.getTripByType(depart, destination, depart_date, type)
+  const {type} = req.body
+  const result = await trips.getTripByType(type)
     .then(result => { return result })
     .catch(err => console.log(err))
 
