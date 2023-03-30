@@ -178,7 +178,7 @@ class Ticket {
       //check cancel data if < 24 h
       
       const query = ` 
-          select trip.begin_time 
+          select trip.begin_time, trip.id as trip_id
           from trip	
             join transportation ON trip.id = transportation.id
             join ticket ON ticket.transportation_id = transportation.id
@@ -223,6 +223,33 @@ class Ticket {
         .input('sit_number', mssql.INT, sit_number)
         .query(query2)
 
+        
+        // const query3 = ` 
+        // SELECT * from total_amount WHERE trip_id = @trip_id
+        // `;
+
+      
+        // const get_total_amount = await pool.request()
+        //   .input('trip_id', mssql.INT, check_date.recordset[0].trip_id)
+        //   .query(query3)
+
+        // const old_total = get_total_amount.recordset[0].total_amount
+        // const old_quantity = get_total_amount.recordset[0].quantity
+
+        // const new_total = old_total - (old_total/old_quantity)
+        // const new_quantity = old_quantity - 1
+        //  // update total amount by minus 1 price
+        //   const query4 = ` 
+        //                   UPDATE total_amount
+        //                   SET total_amount = @new_total, quantity= @new_quantity
+        //                   WHERE trip_id = @trip_id and total_amount = @total_amount;
+        //   `;
+  
+        // // create a new request object
+        //   const get_total_amoun = await pool.request()
+        //     .input('trip_id', mssql.INT, check_date.recordset[0].trip_id)
+        //     .query(query3)
+          
 
       console.log(result)
       console.log(delete_cell)

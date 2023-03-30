@@ -294,7 +294,7 @@ exports.getOutComeByComId = async (req, res, next) => {
 
   if (result.recordset.length == 0) {
       // thang ko ban dc ve nao
-      total_cost_array.push(new Object_month(i, 0, [] )) 
+      total_cost_array.push(new Object_month(i, 0, 0 )) 
   }else{
     // thang co ban ve
   const array = result.recordset
@@ -319,7 +319,7 @@ exports.getOutComeByComId = async (req, res, next) => {
 
              if (result.recordset.length == 0) {
                // thang ko ban dc ve nao
-              total_cost_array.push(new Object_month(i, 0, [] )) 
+              total_cost_array.push(new Object_month(i, 0, 0 )) 
               }else{
              // thang co ban ve
               const array = result.recordset
