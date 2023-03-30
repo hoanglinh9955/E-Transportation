@@ -235,7 +235,7 @@ class Ticket {
 
         var old_total = get_total_amount.recordset[count].total_amount
         var old_quantity = get_total_amount.recordset[count].quantity
-        while(old_quantity == 0){
+        while(old_quantity <= 0){
            count = count +1;
            old_total = get_total_amount.recordset[count].total_amount
            old_quantity = get_total_amount.recordset[count].quantity
