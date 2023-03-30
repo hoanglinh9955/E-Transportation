@@ -224,31 +224,34 @@ class Ticket {
         .query(query2)
 
         
-        // const query3 = ` 
-        // SELECT * from total_amount WHERE trip_id = @trip_id
-        // `;
+        const query3 = ` 
+        SELECT * from total_amount WHERE trip_id = @trip_id
+        `;
 
       
-        // const get_total_amount = await pool.request()
-        //   .input('trip_id', mssql.INT, check_date.recordset[0].trip_id)
-        //   .query(query3)
+        const get_total_amount = await pool.request()
+          .input('trip_id', mssql.INT, check_date.recordset[0].trip_id)
+          .query(query3)
 
-        // const old_total = get_total_amount.recordset[0].total_amount
-        // const old_quantity = get_total_amount.recordset[0].quantity
+        const old_total = get_total_amount.recordset[0].total_amount
+        const old_quantity = get_total_amount.recordset[0].quantity
 
-        // const new_total = old_total - (old_total/old_quantity)
-        // const new_quantity = old_quantity - 1
-        //  // update total amount by minus 1 price
-        //   const query4 = ` 
-        //                   UPDATE total_amount
-        //                   SET total_amount = @new_total, quantity= @new_quantity
-        //                   WHERE trip_id = @trip_id and total_amount = @total_amount;
-        //   `;
+        const new_total = old_total - (old_total/old_quantity)
+        const new_quantity = old_quantity - 1
+         // update total amount by minus 1 price
+          const query4 = ` 
+                          UPDATE total_amount
+                          SET total_amount = @new_total, quantity= @new_quantity
+                          WHERE trip_id = @trip_id and total_amount = @old_total;
+          `;
   
-        // // create a new request object
-        //   const get_total_amoun = await pool.request()
-        //     .input('trip_id', mssql.INT, check_date.recordset[0].trip_id)
-        //     .query(query3)
+        // create a new request object
+          const update_total_amount = await pool.request()
+            .input('trip_id', mssql.INT, check_date.recordset[0].trip_id)
+            .input('new_total', mssql.INT, new_total)
+            .input('new_quantity', mssql.INT, new_quantity)
+            .input('old_total', mssql.INT, old_total)
+            .query(query4)
           
 
       console.log(result)

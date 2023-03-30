@@ -52,7 +52,6 @@ class Company {
             console.log(err)
         }
     }
-
     async getAllCompany() {
         try {
             // Connect to the database
