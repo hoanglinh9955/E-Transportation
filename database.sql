@@ -10,7 +10,7 @@ create table company(
    role NVARCHAR(50),
    status INT,
    address NVARCHAR(100),
-   hotline INT
+   hotline NVARCHAR(250)
 );
 go
 create table route(
@@ -45,7 +45,7 @@ create table user_(
    name NVARCHAR(50),
    email NVARCHAR(50),
    password NVARCHAR(250),
-   phone_number int,
+   phone_number NVARCHAR(250),
    role NVARCHAR(20),
    status int
 );
@@ -69,7 +69,8 @@ create table total_amount(
    trip_id INT,
    company_id INT,
    total_amount INT,
-   quantity INT
+   quantity INT,
+   year_month NVARCHAR(200)
 );
 go
 create table ticket_detail(
@@ -84,7 +85,7 @@ create table ticket_detail(
    end_time NVARCHAR(50),
    begin_time NVARCHAR(50),
    transport_name NVARCHAR(100),
-   image_path NVARCHAR(250),
+   image_path NVARCHAR(max),
    type INT,
    user_name NVARCHAR(100),
    sit_number INT
@@ -96,72 +97,5 @@ create table cell(
    sit_number INT
 );
 go
-INSERT INTO company(name, address, hotline, email, role, status, password)
-VALUES ('thanh buoi', 'ha noi', '1234567890', 'thanhbuoi@gmail.com', 'COMPANY', 1, '123456');
-go
-INSERT INTO company(name, address, hotline, email, role, status, password)
-VALUES ('phuong trang', 'ha noi', '1234567890', 'phuongtrang@gmail.com', 'COMPANY', 1, '123456');
-go
-INSERT INTO company(name, address, hotline, email, role, status, password)
-VALUES ('khang dien', 'ha noi', '1234567890', 'khangdien@gmail.com', 'COMPANY', 1, '123456');
-go
-INSERT INTO route(company_id, depart, destination, status)
-VALUES ('1', 'dalat', 'tphcm', '1')
-go
-INSERT INTO route(company_id, depart, destination, status)
-VALUES ('2', 'tphcm', 'dalat', '1')
-go
-INSERT INTO route(company_id, depart, destination, status)
-VALUES ('3', 'tphcm', 'nhatrang', '1')
-go
-INSERT INTO route_name(route_id, company_id , route_name, status)
-VALUES ('1', '1', 'dalat - tphcm', '1')
-go
-INSERT INTO route_name(route_id, company_id , route_name, status)
-VALUES ('2', '2', 'tphcm - dalat', '1')
-go
-INSERT INTO route_name(route_id, company_id ,route_name, status)
-VALUES ('3', '3', 'tphcm - nhatrang','1')
-go
-INSERT INTO trip(route_id, distance, price, begin_time, end_time, time, depart_date, status)
-VALUES ('1', '556','123','10:00', '11:00', '1h', '2022-01-01', '1')
-go
-INSERT INTO trip(route_id, distance, price, begin_time, end_time, time, depart_date, status)
-VALUES ('2', '666', '333', '05:30' , '07:30','2h', '2022-02-01', '1')
-go
-INSERT INTO trip(route_id, distance, price, begin_time, end_time, time ,depart_date, status)
-VALUES ('2', '666', '333', '05:30' , '07:30','2h', '2022-04-01', '1')
-go
-INSERT INTO trip(route_id, distance, price, begin_time, end_time, time, depart_date, status)
-VALUES ('3', '66', '333', '05:30' , '07:30','2h', '2022-04-01', '1')
-go
-INSERT INTO  transportation(trip_id, image_path, name, type)
-VALUES ('1', 'example/path', 'limo','16')
-go
-INSERT INTO  transportation(trip_id, image_path, name, type)
-VALUES ('2', 'example/path', 'limo','16')
-go
-INSERT INTO  transportation(trip_id, image_path, name, type)
-VALUES ('3', 'example/path', 'xe giuong nam','45')
-go
-INSERT INTO  transportation(trip_id, image_path, name, type)
-VALUES ('4', 'example/path', 'xe giuong nam','45')
-go
-INSERT INTO  user_(name, email, password, phone_number, role, status)
-VALUES ('user1', 'user1@gmail.com', '123456','123456789', 'USER', 1)
-go
-INSERT INTO  user_(name, email, password, phone_number, role, status)
-VALUES ('user2', 'user2@gmail.com', '123456','123456789', 'USER', 1)
-go
-INSERT INTO  user_(name, email, password, phone_number, role, status)
-VALUES ('user3', 'user3@gmail.com', '123456','123456789', 'USER', 1)
-go
-INSERT INTO  user_(name, email, password, phone_number, role, status)
-VALUES ('user4', 'user4@gmail.com', '123456','123456789', 'USER', 1)
-go
-INSERT INTO  user_(name, email, password, phone_number, role, status)
-VALUES ('user5', 'user5@gmail.com', '123456','123456789', 'USER', 1)
-go
 INSERT INTO  user_(name, email, password, phone_number, role, status)
 VALUES ('admin', 'admin@gmail.com', '123456','123456789', 'ADMIN', 1)
-

@@ -645,6 +645,42 @@ exports.resetPassword = async (req, res, next) => {
   }
 
 }
+exports.updatePhoneNumber = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Lỗi');
+    error.statusCode = 200;
+    error.message = errors.errors[0].msg;
+    error.data = false;
+    next(error);
+  }
+  const user = new User();
+  const { user_id, phone_number } = req.body;
+ 
+
+
+  const result = await user.updatePhoneByUserId(user_id, phone_number)
+    .then(result => { return result })
+    .catch(err => console.log(err))
+  console.log(result)
+
+  if (result === undefined || result.rowsAffected[0] <= 0) {
+    res.status(200).json({
+      message: "Đổi Số Điện Thoại Thất Bại.",
+      data: false
+    })
+    return
+  }
+
+  if(result.rowsAffected[0] > 0)
+    res.status(200).json({
+      message: 'Đổi Số Điện Thoại Thành Công.',
+      data: true,
+    })
+    return
+  }
+
+
 
 
 

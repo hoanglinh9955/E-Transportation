@@ -1,5 +1,6 @@
 const mssql = require('mssql');
 const config = require('../config');
+const moment = require('moment')
 class Ticket {
   constructor(ticket_id) {
     this.ticket_id = ticket_id
@@ -15,6 +16,7 @@ class Ticket {
       var trip_id;
       var price;
       var company_id;
+      var begin_time;
       //check cell
       for (let i = 0; i < quantity; i++) {
 
@@ -90,17 +92,23 @@ class Ticket {
                     INSERT INTO ticket_detail (ticket_id, order_date, company_name, depart, destination, depart_date, distance, price, end_time, begin_time, transport_name, image_path, type, user_name, sit_number)
                     VALUES (@ticket_id, @order_date, @companyName, @depart, @destination, @departDate, @distance, @price, @endTime, @beginTime, @tranportName, @image_path, @type, @user_name, @sit_number);    
                     `);
-          trip_id = getTicketDetail.recordset[0].trip_id
-          price = getTicketDetail.recordset[0].price
-          company_id = getTicketDetail.recordset[0].company_id
+          trip_id = getTicketDetail.recordset[0].trip_id;
+          price = getTicketDetail.recordset[0].price;
+          company_id = getTicketDetail.recordset[0].company_id;
+          begin_time = getTicketDetail.recordset[0].beginTime;
       }
+      
+        const today = moment(begin_time); // Create a new Moment object with the current date and time
+        const year_month = today.format('YYYY-MM'); 
+
       const total_amount = await pool.request()
       .input('trip_id', mssql.INT, trip_id)
       .input('total_amount', mssql.INT, quantity*price)
       .input('company_id', mssql.INT, company_id)
       .input('quantity', mssql.INT, quantity)
-      .query(`INSERT INTO total_amount (trip_id, company_id, total_amount, quantity)
-              VALUES (@trip_id ,@company_id, @total_amount, @quantity)   
+      .input('year_month', mssql.NVarChar, year_month)
+      .query(`INSERT INTO total_amount (trip_id, company_id, total_amount, quantity, year_month)
+              VALUES (@trip_id ,@company_id, @total_amount, @quantity, @year_month)   
                           `);
 
       const createCell = await pool.request()

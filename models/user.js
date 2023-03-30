@@ -21,7 +21,7 @@ class User {
                 .input('name', mssql.NVarChar, this.name)
                 .input('email', mssql.NVarChar, this.email)
                 .input('password', mssql.NVarChar, this.password)
-                .input('phone_number', mssql.Int, parseInt(this.phone_number))
+                .input('phone_number', mssql.NVarChar, this.phone_number)
                 .input('role', mssql.NVarChar, this.role)
                 .input('status', mssql.Int, this.status)
                 .query('INSERT INTO user_ (name, email, password, phone_number, role, status) VALUES (@name, @email, @password, @phone_number, @role, @status)');
@@ -145,6 +145,23 @@ class User {
             
         }
     }
+    async updatePhoneByUserId(user_id, phone_number) {
+        try {
+            // Connect to the database
+            const pool = await mssql.connect(config.sql);
+    
+            // Get the user from the database
+            const result = await pool.request()
+            .input('user_id', mssql.INT, user_id)
+            .input('phone_number', mssql.NVarChar, phone_number)
+            .query('UPDATE user_ SET phone_number = @phone_number WHERE user_.id = @user_id');
+            
+            return result;
+            
+        } catch (err) {
+            console.log(err)
+        }
+}
     }
 
 module.exports = User;

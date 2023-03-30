@@ -22,7 +22,7 @@ class Company {
                 .input('name', mssql.NVarChar, this.name)
                 .input('email', mssql.NVarChar, this.email)
                 .input('password', mssql.NVarChar, this.password)
-                .input('hotline', mssql.Int, parseInt(this.hotline))
+                .input('hotline', mssql.NVarChar, this.hotline)
                 .input('role', mssql.NVarChar, this.role)
                 .input('status', mssql.Int, this.status)
                 .input('address', mssql.NVarChar, this.address)
@@ -120,7 +120,7 @@ class Company {
             console.log(err)
         }
     }
-    async getOutComeByComId(com_id) {
+    async getOutComeByComId(com_id, year_month) {
         try {
             // Connect to the database
             const pool = await mssql.connect(config.sql);
@@ -128,8 +128,8 @@ class Company {
             // Get the user from the database
             const result = await pool.request()
             .input('com_id', mssql.Int, com_id)
-            .query(`SELECT total_amount, quantity from total_amount where company_id = @com_id`);
-            
+            .input('year_month', mssql.NVarChar, year_month)
+            .query(`SELECT total_amount, quantity from total_amount where company_id = @com_id and year_month = @year_month`);
             return result;
             
         } catch (err) {

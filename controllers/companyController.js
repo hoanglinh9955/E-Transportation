@@ -23,7 +23,7 @@ exports.getRouteByComId = async (req, res, next) => {
     .then(result => { return result })
     .catch(err => console.log(err))
 
-  console.log(result.recordset)
+
   if (result.recordset.length == 0) {
     res.status(200).json({
       message: "Không Có Tuyến Đường Nào Để Hiển Thị.",
@@ -70,6 +70,7 @@ exports.createUpdateTripByCompany = async (req, res, next) => {
     const hours = Math.floor(diffInMins / 60);
     const minutes = diffInMins % 60;
     const time= `${hours.toString().padStart(2, '0')}h${minutes.toString().padStart(2, '0')}m`;
+    console.log(time);
 
     const result = await trips.createUpdateTripByCompany(depart, destination, company_id, depart_date, distance, price, end_time, begin_time, time, transport_name, image_path, type, route_id, trip_id, tran_id)
       .then(result => { return result })
@@ -78,7 +79,7 @@ exports.createUpdateTripByCompany = async (req, res, next) => {
   }
   
 
-console.log(array_result)
+
 const array_object = []
 var count = 0
 array_result.map(e => {
@@ -109,7 +110,6 @@ array_result.map(e => {
       } 
     }
   }
-  console.log(array_object)
   count++;
 })
   return res.status(200).json({array_object});
@@ -180,7 +180,7 @@ exports.getTripsByComId = async (req, res, next) => {
     .then(result => { return result })
     .catch(err => console.log(err))
 
-  console.log(result.recordset)
+
   if (result.recordset.length == 0) {
     res.status(200).json({
       message: "Không Có Chuyến Xe Nào Để Hiển Thị.",
@@ -217,7 +217,7 @@ exports.getRouteNameByComId = async (req, res, next) => {
     .then(result => { return result })
     .catch(err => console.log(err))
 
-  console.log(result)
+  
   if (result.recordset.length == 0 || result === undefined) {
     res.status(200).json({
       message: "Không Có Tên Tuyến Đường Để Hiển Thị",
@@ -253,7 +253,7 @@ exports.deleteRouteByRouteIdAndComId = async (req, res, next) => {
     .then(result => { return result })
     .catch(err => console.log(err))
 
-  console.log(result)
+
 
   
 
@@ -280,16 +280,16 @@ exports.getOutComeByComId = async (req, res, next) => {
     return
   }
     const company = new Company();
-    const company_id = req.body.company_id;
+    const {company_id, year_month} = req.body;
 
-  const result = await company.getOutComeByComId(company_id)
+  const result = await company.getOutComeByComId(company_id, year_month)
     .then(result => { return result })
     .catch(err => console.log(err))
 
-  console.log(result.recordset)
+
   if (result.recordset.length == 0) {
     res.status(200).json({
-      message: "Không Có Vé Nào được bán",
+      message: `Không Có Vé Nào được bán trong ${year_month}`,
       data: false
     })
     return
@@ -304,7 +304,7 @@ exports.getOutComeByComId = async (req, res, next) => {
   })
   if (result.recordset) {
     res.status(200).json({
-      message: 'lấy Doanh Thu Của Công Ty Thành Công',
+      message: `Hiển Thị Doanh Thu ${year_month} Của Công Ty Thành Công`,
       data: true,
       total_amount: total_amount,
       total_tickets_sold: total_tickets_sold 
@@ -330,7 +330,7 @@ exports.fetchRoutes = async (req, res, next) => {
     .then(result => { return result })
     .catch(err => console.log(err))
 
-  console.log(result.recordset)
+
   if (result.recordset.length <= 0 ) {
     res.status(200).json({
       message: "Nạp Dữ Liệu Thất Bại !!!",

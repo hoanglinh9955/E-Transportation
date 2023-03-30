@@ -30,7 +30,9 @@ router.post('/user/cancelTicket', userController.cancelTicket);
 
 router.post('/user/forgetPassword', userController.forgetPassword);
 
-router.post('/user/resetPassword', userController.resetPassword)
+router.post('/user/resetPassword', userController.resetPassword);
+
+router.post('/user/updatePhoneNumber', userController.updatePhoneNumber);
 
 
 module.exports = router;
