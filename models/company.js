@@ -109,7 +109,7 @@ class Company {
             const result = await pool.request()
             .input('email', mssql.NVarChar, email)
             .input('name', mssql.NVarChar, name)
-            .input('hotline', mssql.Int, hotline)
+            .input('hotline', mssql.Nvarchar, hotline)
             .input('address', mssql.NVarChar, address)
             .input('status', mssql.Int, status)
             .query('UPDATE company SET status = @status, hotline = @hotline, address = @address, name = @name WHERE email = @email');

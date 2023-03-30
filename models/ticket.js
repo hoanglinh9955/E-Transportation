@@ -61,7 +61,7 @@ class Ticket {
                 r.depart AS depart, r.destination AS destination, 
                 tr.begin_time AS beginTime, tr.end_time AS endTime, 
                 tr.distance AS distance, tr.price AS price, tr.depart_date AS departDate,
-                c.name AS companyName, t.trip_id, c.id as company_id
+                c.name AS companyName, t.trip_id, c.id as company_id, c.address as company_address
                     FROM transportation t
                         JOIN trip tr ON t.trip_id = tr.id
                         JOIN route r ON tr.route_id = r.id
@@ -85,12 +85,13 @@ class Ticket {
           .input('price', mssql.INT, getTicketDetail.recordset[0].price)
           .input('departDate', mssql.NVarChar, getTicketDetail.recordset[0].departDate)
           .input('companyName', mssql.NVarChar, getTicketDetail.recordset[0].companyName)
+          .input('company_address', mssql.NVarChar, getTicketDetail.recordset[0].company_address)
           .input('user_name', mssql.NVarChar, getTicketDetail.recordset[0].user_name)
           .input('order_date', mssql.Date, (new Date()))
           .input('sit_number', mssql.Int, array_sit_number[i])
           .query(`
-                    INSERT INTO ticket_detail (ticket_id, order_date, company_name, depart, destination, depart_date, distance, price, end_time, begin_time, transport_name, image_path, type, user_name, sit_number)
-                    VALUES (@ticket_id, @order_date, @companyName, @depart, @destination, @departDate, @distance, @price, @endTime, @beginTime, @tranportName, @image_path, @type, @user_name, @sit_number);    
+                    INSERT INTO ticket_detail (ticket_id, order_date, company_name, depart, destination, depart_date, distance, price, end_time, begin_time, transport_name, image_path, type, user_name, sit_number, company_address)
+                    VALUES (@ticket_id, @order_date, @companyName, @depart, @destination, @departDate, @distance, @price, @endTime, @beginTime, @tranportName, @image_path, @type, @user_name, @sit_number, @company_address);    
                     `);
           trip_id = getTicketDetail.recordset[0].trip_id;
           price = getTicketDetail.recordset[0].price;

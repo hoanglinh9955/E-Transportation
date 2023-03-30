@@ -339,20 +339,84 @@ exports.createOrder = async (req, res, next) => {
       seats = seats + number + ', '
     }
     const price = quantity * ticketArray[0].price
-    
+  
+    const dateStr = ticketArray[0].begin_time;
+    const dateObj = new Date(dateStr);
+
+    const hours = dateObj.getUTCHours();
+    const minutes = dateObj.getUTCMinutes();
+    const day = dateObj.getUTCDate();
+    const month = dateObj.getUTCMonth() + 1; // Add 1 to get the correct month (0-based)
+    const year = dateObj.getUTCFullYear();
+
+    const timeStr = `${hours} Giờ ${minutes} Phút`;
+    const dateFormatted = `${timeStr} Ngày ${day} Tháng ${month.toString().padStart(2, "0")} Năm ${year}`;
+
     let mailOptions = {
       from: '<e.transportation.saleticket@gmail.com>',
       subject: 'Đặt Vé Thành Công',
       to: user_email.recordset[0].email,
-      html: `<h1>Bạn ${ticketArray[0].user_name} Đã Đặt ${quantity} Vé Xe Từ Công Ty ${ticketArray[0].company_name} Thành Công </h1>
-             <h3> Thời Gian Xe Khởi Hành Lúc : ${ticketArray[0].begin_time} <h3/>
-             <h3> Ngày : ${ticketArray[0].depart_date}<h3/>
-             <h3> Đi Từ ${ticketArray[0].depart} Đến ${ticketArray[0].destination}<h3/>
-             <h3> Tổng Giá Vé : ${price}<h3/>
-             <h3> Vị Trí Ghế Ngồi : ${seats}<h3/>
-             <h3> HotLine: 19990000 <h3/>
-             <h3> Email: e.transportation.saleticket@gmail.com <h3/>`,
-      text: 'Bạn Đã Đăng Ký Tài Khoản Thành Công',
+      html: `<table style="border-collapse: collapse; width: 100%;">
+  <tr>
+    <td style="padding: 10px; border: 1px solid #ccc;">
+      <h2>Bạn ${ticketArray[0].user_name} Đã Đặt ${quantity} Vé Xe Từ Công Ty ${ticketArray[0].company_name}</h2>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 10px; border: 1px solid #ccc;">
+      <div style="font-size: 18px; font-weight: bold;">Thông Tin Chi Tiết Vé Xe</div>
+      <ul style="list-style-type: none; margin: 0; padding: 0;">
+        <li>
+          <div style="display: inline-block; width: 150px;">Thời Gian Xe Khởi Hành:</div>
+          <div style="display: inline-block;">${dateFormatted}</div>
+        </li>
+        <li>
+          <div style="display: inline-block; width: 150px;">Đi Từ:</div>
+          <div style="display: inline-block;">${ticketArray[0].depart}</div>
+        </li>
+        <li>
+          <div style="display: inline-block; width: 150px;">Đến:</div>
+          <div style="display: inline-block;">${ticketArray[0].destination}</div>
+        </li>
+        <li>
+          <div style="display: inline-block; width: 150px;">Tổng Giá Vé:</div>
+          <div style="display: inline-block;">${price}</div>
+        </li>
+        <li>
+          <div style="display: inline-block; width: 150px;">Vị Trí Ghế Ngồi:</div>
+          <div style="display: inline-block;">${seats}</div>
+        </li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 10px; border: 1px solid #ccc;">
+      <div style="font-size: 18px; font-weight: bold;">Thông Tin Nhà Xe</div>
+      <ul style="list-style-type: none; margin: 0; padding: 0;">
+        <li>
+          <div style="display: inline-block; width: 150px;">Địa chỉ:</div>
+          <div style="display: inline-block;">${ticketArray[0].company_address}</div>
+        </li>
+        <li>
+          <div style="display: inline-block; width: 150px;">Tên Công Ty:</div>
+          <div style="display: inline-block;">${ticketArray[0].company_name}</div>
+        </li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 10px; border: 1px solid #ccc;">
+      <div>Vui lòng có mặt tại quầy vé bến xe trước 30 phút để làm thủ tục lên xe.</div>
+      <div style="display: inline-block; width: 150px;">Hotline:</div>
+          <div style="display: inline-block;">19990000</div>
+          <br/>
+          <div style="display: inline-block; width: 150px;">Email:</div>
+          <div style="display: inline-block;">e.transportation.saleticket@gmail.com</div>
+    </td>
+  </tr>
+</table>
+`,
+      text: 'Bạn Đặt Vé Thành Công',
     };
 
     // send email with defined transport object

@@ -88,7 +88,8 @@ create table ticket_detail(
    image_path NVARCHAR(max),
    type INT,
    user_name NVARCHAR(100),
-   sit_number INT
+   sit_number INT,
+   company_address NVARCHAR(max)
 );
 go
 create table cell(
