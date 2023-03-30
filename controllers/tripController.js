@@ -21,7 +21,6 @@ exports.getTrips = async (req, res, next) => {
     .then(result => { return result })
     .catch(err => console.log(err))
 
-  console.log(result);
   if (result.recordset.length == 0) {
     res.status(200).json({
       message: "Không Có Chuyến Xe Nào Trong Cơ Sở Dữ Liệu.",
@@ -47,7 +46,7 @@ exports.getRoutes = async (req, res, next) => {
     .then(result => { return result })
     .catch(err => console.log(err))
 
-  console.log(result)
+
   if (result.recordset.length == 0) {
     res.status(200).json({
       message: "Không Có Tuyến Đường Nào Để Hiển Thị",
@@ -83,7 +82,7 @@ exports.getAllTrips = async (req, res, next) => {
     .then(result => { return result })
     .catch(err => console.log(err))
 
-  console.log(result);
+
   if (result.recordset.length == 0) {
     res.status(200).json({
       message: "Không Có Chuyến Xe Nào Để Hiển Thị.",
@@ -118,7 +117,6 @@ exports.getAllTripByType = async (req, res, next) => {
     .then(result => { return result })
     .catch(err => console.log(err))
 
-  console.log(result);
   if (result.recordset.length == 0) {
     res.status(200).json({
       message: "Không Có Chuyến Xe Nào Để Hiển Thị",

@@ -84,7 +84,7 @@ exports.createCompany = async (req, res, next) => {
     .then(result => { return result })
     .catch(err => console.log(err))
 
-  console.log(result)
+
   if (result.recordset.length == 0) {
     res.status(200).json({
       message: "Không Có Công Ty Nào Để Hiển Thị",
@@ -110,7 +110,7 @@ const result = await user.getAllUser()
   .then(result => { return result })
   .catch(err => console.log(err))
 
-console.log(result)
+
 if (result.recordset.length == 0) {
   res.status(200).json({
     message: "Không Có Người Dùng Nào Để Hiển Thị.",
@@ -157,7 +157,7 @@ exports.banCompanybyEmail = async (req, res, next) => {
   .then(result => { return result })
   .catch(err => console.log(err))
 
-console.log(result)
+
 if (result.rowsAffected == 0) {
   res.status(200).json({
     message: "Khóa Tài Khoản Công Ty Thất Bại.",
@@ -203,7 +203,7 @@ exports.unBanCompanybyEmail = async (req, res, next) => {
   .then(result => { return result })
   .catch(err => console.log(err))
 
-console.log(result)
+
 if (result.rowsAffected == 0) {
   res.status(200).json({
     message: "Mở Khóa Tài Khoản Công Ty Thất Bại.",
@@ -249,7 +249,7 @@ exports.banUserbyEmail = async (req, res, next) => {
   .then(result => { return result })
   .catch(err => console.log(err))
 
-console.log(result)
+
 if (result.rowsAffected == 0) {
   res.status(200).json({
     message: "Khóa Tài Khoản Người Dùng Thất Bại",
@@ -295,7 +295,7 @@ exports.unBanUserbyEmail = async (req, res, next) => {
   .then(result => { return result })
   .catch(err => console.log(err))
 
-console.log(result)
+
 if (result.rowsAffected == 0) {
   res.status(200).json({
     message: "Mở Khóa Tài Khoản Người Dùng Thất Bại.",
@@ -341,7 +341,6 @@ exports.updateCompany = async (req, res, next) => {
   .then(result => { return result })
   .catch(err => console.log(err))
 
-console.log(result)
 if (result.rowsAffected == 0) {
   res.status(200).json({
     message: "Cập Nhật Công Ty Thất Bại.",

@@ -43,7 +43,7 @@ exports.register = async (req, res, next) => {
     const findCom = await com.findOne(email)
       .then(result => { return result })
       .catch(err => console.log(err))
-    console.log('company test')
+  
     if (findCom.recordset.length > 0) {
       res.status(200).json({
         message: 'Email Này Là Email Công Ty, Xin Hãy Đăng Ký Bằng Một Email Khác.',
@@ -332,7 +332,7 @@ exports.createOrder = async (req, res, next) => {
     user_email = await user.getUserEmail(user_id)
     .then(result => { return result })
     .catch(err => console.log(err))
-    console.log(user_email.recordset[0].email)
+
     var seats = ''
     for(let i = 0; i < quantity; i++){
       const number = array_sit_number[i];
@@ -392,7 +392,7 @@ exports.getCellByTranId = async (req, res, next) => {
     .catch(err => console.log(err))
 
 
-  console.log(result)
+
   if (result === undefined) {
     res.status(200).json({
       message: "Không Có Chỗ Ngồi Nào Được Đặt",
@@ -425,7 +425,7 @@ exports.getCellByTranId = async (req, res, next) => {
     }
 
 
-    console.log(array)
+
     res.status(200).json({
       message: 'Lấy Chỗ Ngồi Thành Công',
       data: true,
@@ -454,7 +454,7 @@ exports.getTicketByUserId = async (req, res, next) => {
     .catch(err => console.log(err))
 
 
-  console.log(result)
+ 
   if (result === undefined || result.length == 0) {
     res.status(200).json({
       message: "Bạn Không Có Vé Nào Đã Mua",
@@ -493,7 +493,7 @@ exports.cancelTicket = async (req, res, next) => {
     return
   }
 
-  console.log(result)
+
   if (result === undefined || result.rowsAffected == 0) {
     res.status(200).json({
       message: "Hủy Vé Thất Bại",
@@ -537,7 +537,7 @@ exports.forgetPassword = async (req, res, next) => {
   const result = await user.forgetPassword(email, randomPassword)
     .then(result => { return result })
     .catch(err => console.log(err))
-  console.log(result)
+ 
 
   if (result === undefined || result.rowsAffected[0] <= 0) {
     res.status(200).json({
@@ -547,7 +547,7 @@ exports.forgetPassword = async (req, res, next) => {
     return
   }
 
-  console.log(result)
+  
 
   if (result.rowsAffected[0] > 0) {
     let mailOptions = {
@@ -604,7 +604,7 @@ exports.resetPassword = async (req, res, next) => {
   const result = await user.forgetPassword(email, confirmPassword)
     .then(result => { return result })
     .catch(err => console.log(err))
-  console.log(result)
+
 
   if (result === undefined || result.rowsAffected[0] <= 0) {
     res.status(200).json({
@@ -614,7 +614,7 @@ exports.resetPassword = async (req, res, next) => {
     return
   }
 
-  console.log(result)
+
 
   if (result.rowsAffected[0] > 0) {
     let mailOptions = {
@@ -662,7 +662,7 @@ exports.updatePhoneNumber = async (req, res, next) => {
   const result = await user.updatePhoneByUserId(user_id, phone_number)
     .then(result => { return result })
     .catch(err => console.log(err))
-  console.log(result)
+
 
   if (result === undefined || result.rowsAffected[0] <= 0) {
     res.status(200).json({

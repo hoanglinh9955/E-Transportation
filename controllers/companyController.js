@@ -294,7 +294,7 @@ exports.getOutComeByComId = async (req, res, next) => {
 
   if (result.recordset.length == 0) {
       // thang ko ban dc ve nao
-      total_cost_array.push(new Object_month(`${year_month}`, 0, [] )) 
+      total_cost_array.push(new Object_month(i, 0, [] )) 
   }else{
     // thang co ban ve
   const array = result.recordset
@@ -305,7 +305,7 @@ exports.getOutComeByComId = async (req, res, next) => {
     total_amount = total_amount + e.total_amount
     total_tickets_sold = total_tickets_sold + e.quantity
   })
-      total_cost_array.push(new Object_month(`${year_month}`, total_amount , total_tickets_sold)) 
+      total_cost_array.push(new Object_month(i, total_amount , total_tickets_sold)) 
   }
 
 
@@ -319,7 +319,7 @@ exports.getOutComeByComId = async (req, res, next) => {
 
              if (result.recordset.length == 0) {
                // thang ko ban dc ve nao
-              total_cost_array.push(new Object_month(`${year_month}`, 0, [] )) 
+              total_cost_array.push(new Object_month(i, 0, [] )) 
               }else{
              // thang co ban ve
               const array = result.recordset
@@ -330,7 +330,7 @@ exports.getOutComeByComId = async (req, res, next) => {
     total_amount = total_amount + e.total_amount
     total_tickets_sold = total_tickets_sold + e.quantity
   })
-      total_cost_array.push(new Object_month(`${year_month}`, total_amount , total_tickets_sold)) 
+      total_cost_array.push(new Object_month(i, total_amount , total_tickets_sold)) 
       }
     }
   }

@@ -15,8 +15,8 @@ class Object {
     }
   }
   class Object_month {
-    constructor(message, total_amount, total_ticket_sold) {
-      this.message = message;
+    constructor(month, total_amount, total_ticket_sold) {
+      this.month = month;
       this.total_amount = total_amount;
       this.total_ticket_sold = total_ticket_sold;
     }
