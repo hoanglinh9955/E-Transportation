@@ -1,6 +1,6 @@
 const Company = require('../models/company');
 const Trips = require('../models/trip');
-const { Object, Object_id } = require('../models/object');
+const { Object, Object_id, Object_month} = require('../models/object');
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator/check');
 const moment = require('moment')
@@ -280,20 +280,23 @@ exports.getOutComeByComId = async (req, res, next) => {
     return
   }
     const company = new Company();
-    const {company_id, year_month} = req.body;
+    var total_cost_array = [];
+    var {company_id, year} = req.body;
 
-  const result = await company.getOutComeByComId(company_id, year_month)
+    for(let i=1; i <=12; i++){
+      if(i < 10){
+        //month < 10
+        const year_month = year+'-0'+i.toString();
+        const result = await company.getOutComeByComId(company_id, year_month)
     .then(result => { return result })
     .catch(err => console.log(err))
 
 
   if (result.recordset.length == 0) {
-    res.status(200).json({
-      message: `Không Có Vé Nào được bán trong ${year_month}`,
-      data: false
-    })
-    return
-  }
+      // thang ko ban dc ve nao
+      total_cost_array.push(new Object_month(`${year_month}`, 0, [] )) 
+  }else{
+    // thang co ban ve
   const array = result.recordset
   var total_amount = 0;
   var total_tickets_sold = 0;
@@ -302,15 +305,36 @@ exports.getOutComeByComId = async (req, res, next) => {
     total_amount = total_amount + e.total_amount
     total_tickets_sold = total_tickets_sold + e.quantity
   })
-  if (result.recordset) {
-    res.status(200).json({
-      message: `Hiển Thị Doanh Thu ${year_month} Của Công Ty Thành Công`,
-      data: true,
-      total_amount: total_amount,
-      total_tickets_sold: total_tickets_sold 
-    })
-    return
+      total_cost_array.push(new Object_month(`${year_month}`, total_amount , total_tickets_sold)) 
   }
+
+
+      }else{
+        //month > 10
+        const year_month = year+'-'+i.toString();
+        const result = await company.getOutComeByComId(company_id, year_month)
+    .then(result => { return result })
+    .catch(err => console.log(err))
+
+
+             if (result.recordset.length == 0) {
+               // thang ko ban dc ve nao
+              total_cost_array.push(new Object_month(`${year_month}`, 0, [] )) 
+              }else{
+             // thang co ban ve
+              const array = result.recordset
+              var total_amount = 0;
+              var total_tickets_sold = 0;
+
+  array.map(e => {
+    total_amount = total_amount + e.total_amount
+    total_tickets_sold = total_tickets_sold + e.quantity
+  })
+      total_cost_array.push(new Object_month(`${year_month}`, total_amount , total_tickets_sold)) 
+      }
+    }
+  }
+  return res.status(200).json({total_cost_array});
 }
 
 exports.fetchRoutes = async (req, res, next) => {
