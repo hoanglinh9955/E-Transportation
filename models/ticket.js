@@ -228,14 +228,19 @@ class Ticket {
         SELECT * from total_amount WHERE trip_id = @trip_id
         `;
 
-      
+        var count = 0;
         const get_total_amount = await pool.request()
           .input('trip_id', mssql.INT, check_date.recordset[0].trip_id)
           .query(query3)
 
-        const old_total = get_total_amount.recordset[0].total_amount
-        const old_quantity = get_total_amount.recordset[0].quantity
-
+        var old_total = get_total_amount.recordset[count].total_amount
+        var old_quantity = get_total_amount.recordset[count].quantity
+        while(old_quantity == 0){
+           count = count +1;
+           old_total = get_total_amount.recordset[count].total_amount
+           old_quantity = get_total_amount.recordset[count].quantity
+        }
+        
         const new_total = old_total - (old_total/old_quantity)
         const new_quantity = old_quantity - 1
          // update total amount by minus 1 price
